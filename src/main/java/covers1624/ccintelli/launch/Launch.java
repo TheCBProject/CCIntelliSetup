@@ -1,6 +1,7 @@
 package covers1624.ccintelli.launch;
 
 import covers1624.ccintelli.gui.CCIntelliSetupConsole;
+import covers1624.ccintelli.gui.CCIntelliSetupMainWindow;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.util.Utils;
 import covers1624.ccintelli.util.logger.LogHelper;
@@ -9,7 +10,6 @@ import covers1624.launchwrapper.LaunchHandler;
 import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
@@ -37,8 +37,8 @@ public class Launch {
 		LOG_DIR = new File(BUILD_DIR, "logs");
 		LIB_DIR = new File(BUILD_DIR, "libs");
 		WORKSPACE = new File("Workspace");
-		PROJECT_RUN = new File(WORKSPACE + "run");
-		PROJECT_OUTPUT = new File(WORKSPACE + "out");
+		PROJECT_RUN = new File(WORKSPACE, "run");
+		PROJECT_OUTPUT = new File(WORKSPACE, "out");
 		MODULES = new File(WORKSPACE, "Modules");
 		FORGE = new File("Forge");
 
@@ -52,10 +52,13 @@ public class Launch {
 		console.setVisible(true);
 
 
-		run();
+//		run();
 
 
 		console.dispose();
+
+
+		new CCIntelliSetupMainWindow().setVisible(true);
 	}
 
 	public static void run() throws Exception {
