@@ -30,6 +30,8 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         compilerOutDirField.setText(Launch.PROJECT_OUTPUT.getAbsolutePath());
         compilerSelector.setSelectedItem(GuiFields.compiler);
         addNonNullAssertionsCheckbox.setSelected(GuiFields.addNotNullAssertions);
+
+        setTitle("TODO... @Covers you can set this in the constructor.");
     }
 
     /**
