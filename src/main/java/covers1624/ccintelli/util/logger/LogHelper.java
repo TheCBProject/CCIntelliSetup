@@ -1,5 +1,6 @@
 package covers1624.ccintelli.util.logger;
 
+import covers1624.ccintelli.launch.Launch;
 import covers1624.ccintelli.util.Utils;
 
 import java.io.*;
@@ -51,7 +52,8 @@ public class LogHelper {
     public static void log(Level logLevel, Object object) {
     	String log = String.format("[%s]: %s", logLevel.name(), String.valueOf(object));
         System.out.println(log);
-        if (writer != null) {
+	    Launch.console.println(log);
+	    if (writer != null) {
         	writer.println(log);
         	writer.flush();
         }
