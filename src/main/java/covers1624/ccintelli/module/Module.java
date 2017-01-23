@@ -25,13 +25,10 @@ import java.util.List;
  */
 public class Module {
 
-	private final File CONTENT_ROOT;
-	public List<String> soruceFolders = new LinkedList<>();
+	public String NAME;
+	public File CONTENT_ROOT;
+	public List<String> sourceFolders = new LinkedList<>();
 	public List<OrderEntry> orderEntries = new LinkedList<>();
-
-	public Module(File content_root) {
-		CONTENT_ROOT = content_root;
-	}
 
 	public void writeXML(File file) {
 		try {
@@ -59,7 +56,7 @@ public class Module {
 			Element contentElement = document.createElement("content");
 			componentElement.appendChild(contentElement);
 			contentElement.setAttribute("url", "file://" + CONTENT_ROOT.getAbsolutePath());
-			for (String srcFolder : soruceFolders) {
+			for (String srcFolder : sourceFolders) {
 				Element element = document.createElement("sourceFolder");
 				contentElement.appendChild(element);
 				element.setAttribute("url", "file://" + srcFolder);
@@ -83,7 +80,9 @@ public class Module {
 
 	public static Module buildForgeModule(File currentXML, File forgeDir) {
 		try {
-			Module module = new Module(forgeDir);
+			Module module = new Module();
+			module.CONTENT_ROOT = forgeDir;
+			module.NAME = "Forge";
 
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -127,11 +126,11 @@ public class Module {
 					}
 				}
 			}
-			module.soruceFolders.add(new File(forgeDir, "src/main/java").getAbsolutePath());
-			module.soruceFolders.add(new File(forgeDir, "src/main/resources").getAbsolutePath());
-			module.soruceFolders.add(new File(forgeDir, "projects/Forge/src/main/java").getAbsolutePath());
-			module.soruceFolders.add(new File(forgeDir, "projects/Forge/src/main/resources").getAbsolutePath());
-			module.soruceFolders.add(new File(forgeDir, "projects/Forge/src/main/start").getAbsolutePath());
+			module.sourceFolders.add(new File(forgeDir, "src/main/java").getAbsolutePath());
+			module.sourceFolders.add(new File(forgeDir, "src/main/resources").getAbsolutePath());
+			module.sourceFolders.add(new File(forgeDir, "projects/Forge/src/main/java").getAbsolutePath());
+			module.sourceFolders.add(new File(forgeDir, "projects/Forge/src/main/resources").getAbsolutePath());
+			module.sourceFolders.add(new File(forgeDir, "projects/Forge/src/main/start").getAbsolutePath());
 
 			return module;
 		} catch (Exception e) {
