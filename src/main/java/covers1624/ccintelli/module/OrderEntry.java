@@ -14,8 +14,8 @@ import java.util.Map.Entry;
 public abstract class OrderEntry {
 
 	public final Type type;
-	public final boolean export;
-	public final Scope scope;
+	public boolean export;
+	public Scope scope;
 	public Map<String, String> extra = new LinkedHashMap<>();
 
 	protected OrderEntry(Type type, boolean export, Scope scope) {

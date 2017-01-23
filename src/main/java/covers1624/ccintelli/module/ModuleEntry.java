@@ -8,7 +8,7 @@ import org.w3c.dom.Element;
  */
 public class ModuleEntry extends OrderEntry {
 
-	private final String NAME;
+	public String NAME;
 
 	public ModuleEntry(String name, boolean export, Scope scope) {
 		super(Type.MODULE, export, scope);
