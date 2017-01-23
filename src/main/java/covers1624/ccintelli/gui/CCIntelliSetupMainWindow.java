@@ -28,8 +28,8 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         moduleDirField.setText(Launch.MODULES.getAbsolutePath());
         runDirField.setText(Launch.PROJECT_RUN.getAbsolutePath());
         compilerOutDirField.setText(Launch.PROJECT_OUTPUT.getAbsolutePath());
-        compilerSelector.setSelectedItem(GuiFields.compiler);
-        addNonNullAssertionsCheckbox.setSelected(GuiFields.addNotNullAssertions);
+        compilerSelector.setSelectedItem(Launch.COMPILER_SELECT);
+        addNonNullAssertionsCheckbox.setSelected(Launch.NOT_NULL_ASSERTIONS);
 
         setTitle("TODO... @Covers you can set this in the constructor.");
     }
@@ -445,25 +445,25 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
     //Launches the file picker for Workspace Directory
     private void workspaceDirSelectActionPerformed(ActionEvent evt) {
-        workspaceDirField.setText(choosDir(workspaceDirField.getText()));
+        workspaceDirField.setText(chooseDir(workspaceDirField.getText()));
         Launch.WORKSPACE = new File(workspaceDirField.getText());
     }
 
     //Launches the file picker for Module Directory
     private void moduleDirSelectActionPerformed(ActionEvent evt) {
-        moduleDirField.setText(choosDir(moduleDirField.getText()));
+        moduleDirField.setText(chooseDir(moduleDirField.getText()));
         Launch.MODULES = new File(moduleDirField.getText());
     }
 
     //Launches the file picker for Run Directory
     private void runDirSelectActionPerformed(ActionEvent evt) {
-        runDirField.setText(choosDir(runDirField.getText()));
+        runDirField.setText(chooseDir(runDirField.getText()));
         Launch.PROJECT_RUN = new File(runDirField.getText());
     }
 
     //Launches the file picker for Out Directory
     private void compilerOutDirSelectActionPerformed(ActionEvent evt) {
-        compilerOutDirField.setText(choosDir(compilerOutDirField.getText()));
+        compilerOutDirField.setText(chooseDir(compilerOutDirField.getText()));
         Launch.PROJECT_OUTPUT = new File(compilerOutDirField.getText());
     }
 
@@ -488,11 +488,11 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Compiler & Non-Null">
 
     private void addNonNullAssertionsCheckboxActionPerformed(ActionEvent evt) {
-        GuiFields.addNotNullAssertions = addNonNullAssertionsCheckbox.isSelected();
+        Launch.NOT_NULL_ASSERTIONS = addNonNullAssertionsCheckbox.isSelected();
     }
 
     private void compilerSelectorActionPerformed(ActionEvent evt) {
-        GuiFields.compiler = compilerSelector.getSelectedItem().toString();
+        Launch.COMPILER_SELECT = compilerSelector.getSelectedItem().toString();
     }
 
     // </editor-fold>
@@ -523,7 +523,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
     // <editor-fold defaultstate="collapsed" desc="Misc">
 
-    public String choosDir(String defaultDir) {
+    public String chooseDir(String defaultDir) {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         File selectedFile = new File(defaultDir);

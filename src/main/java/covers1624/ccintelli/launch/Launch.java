@@ -29,6 +29,10 @@ public class Launch {
 	public static File FORGE;
 
 	public static CCIntelliSetupConsole console;
+	public static CCIntelliSetupMainWindow window;
+
+	public static String COMPILER_SELECT = "Eclipse";
+	public static boolean NOT_NULL_ASSERTIONS = false;
 
 	public static void main(String[] args) throws Exception {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -50,15 +54,13 @@ public class Launch {
 
 		LogHelper.setLogFile(new File(LOG_DIR, "builder.log"));
 		console.setVisible(true);
-
+		window = new CCIntelliSetupMainWindow();
+		window.setVisible(true);
 
 //		run();
 
 
-		console.dispose();
-
-
-		new CCIntelliSetupMainWindow().setVisible(true);
+		//console.dispose();
 	}
 
 	public static void run() throws Exception {
