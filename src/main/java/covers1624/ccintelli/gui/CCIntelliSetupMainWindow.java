@@ -14,6 +14,7 @@ import covers1624.ccintelli.util.logger.LogHelper;
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -112,6 +113,8 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         depTable = new JTable();
         jMenuBar1 = new JMenuBar();
         fileMenu = new JMenu();
+        importButton = new JMenuItem();
+        exportButton = new JMenuItem();
         helpMenu = new JMenu();
         aboutMenuItem = new JMenuItem();
 
@@ -546,6 +549,23 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         );
 
         fileMenu.setText("File");
+
+        importButton.setText("Import Setup");
+        importButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                importSetup(evt);
+            }
+        });
+        fileMenu.add(importButton);
+
+        exportButton.setText("Export Setup");
+        exportButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                exportSetup(evt);
+            }
+        });
+        fileMenu.add(exportButton);
+
         jMenuBar1.add(fileMenu);
 
         helpMenu.setText("Help");
@@ -815,6 +835,53 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
     // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="File">
+
+    private void importSetup(ActionEvent evt) {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        FileNameExtensionFilter filter;
+        chooser.addChoosableFileFilter(filter = new FileNameExtensionFilter("JSON (.json)", ".json"));
+        chooser.setFileFilter(filter);
+
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            if (!chooser.getSelectedFile().exists()) {
+                JOptionPane.showMessageDialog(this, "That file does not exist!", "File Not Found", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            GuiFields.importSetup(chooser.getSelectedFile());
+        }
+    }
+
+    private void exportSetup(ActionEvent evt) {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        FileNameExtensionFilter filter;
+        chooser.addChoosableFileFilter(filter = new FileNameExtensionFilter("JSON (.json)", ".json"));
+        chooser.setFileFilter(filter);
+
+        if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            if (chooser.getSelectedFile().exists()) {
+                if (JOptionPane.showConfirmDialog(this, "The selected file already exists!\nDo you wish to overwrite it?", "Overwrite?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 1) {
+                    return;
+                }
+                GuiFields.exportSetup(chooser.getSelectedFile());
+                return;
+            }
+
+            String path = chooser.getSelectedFile().getAbsolutePath();
+
+            if (chooser.getFileFilter() == filter && !chooser.getSelectedFile().getAbsolutePath().endsWith(".json")) {
+                GuiFields.exportSetup(new File(path + ".json"));
+            }
+            else {
+                GuiFields.exportSetup(chooser.getSelectedFile());
+            }
+        }
+    }
+
+    // </editor-fold>
+
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Misc">
@@ -974,8 +1041,10 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private DefaultTableModel depTablelModel;
     private JTable depTable;
     private JButton editModuleSrc;
+    private JMenuItem exportButton;
     private JMenu fileMenu;
     private JMenu helpMenu;
+    private JMenuItem importButton;
     private JLabel jLabel1;
     private JLabel jLabel2;
     private JLabel jLabel3;
@@ -1013,3 +1082,4 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     // End of variables declaration                   
     // </editor-fold>
 }
+//Export file browser. Current directory no file name

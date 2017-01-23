@@ -3,6 +3,7 @@ package covers1624.ccintelli.gui;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.module.ModuleEntry;
 import covers1624.ccintelli.module.OrderEntry;
+import covers1624.ccintelli.util.logger.LogHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,5 +33,13 @@ public class GuiFields {
     //TODO... Im a little confused as to what you were trying to tell me to do. I was asking for defaults when a module is created. Is that what this is meant to return?
     public static List<String> findModuleSrc(Module module) {
         return new ArrayList<String>(){{add("src/main/resources");}};
+    }
+
+    public static void importSetup(File fileToImport) {
+        LogHelper.info("Import From: " + fileToImport);
+    }
+
+    public static void exportSetup(File targetFile) {
+        LogHelper.info("Export As: " + targetFile);
     }
 }
