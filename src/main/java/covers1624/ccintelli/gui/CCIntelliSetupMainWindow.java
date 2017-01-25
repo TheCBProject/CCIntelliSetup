@@ -696,7 +696,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         module.NAME = addModuleField.getText();
         module.CONTENT_ROOT = new File(module.NAME);
         module.sourceFolders = GuiFields.findModuleSrc(module);
-        GuiFields.modules.add(module);
+        GuiFields.onModuleAdded(module);
         reloadModuleTree();
         addModuleField.setText("");
     }

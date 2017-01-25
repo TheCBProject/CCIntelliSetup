@@ -3,6 +3,7 @@ package covers1624.ccintelli.gui;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.module.ModuleEntry;
 import covers1624.ccintelli.module.OrderEntry;
+import covers1624.ccintelli.module.OrderEntry.Scope;
 import covers1624.ccintelli.util.logger.LogHelper;
 
 import java.io.File;
@@ -17,22 +18,41 @@ public class GuiFields {
     //The oreder of the entries in this list will be the order they show.
     //I can apply a comparator to the list before display to sort it.
     public static List<Module> modules = new LinkedList<>();
+    public static Module forgeModule;
 
     static {
-        Module module = new Module();
-        module.NAME = "Forge";
-        module.CONTENT_ROOT = new File("Forge");
-        module.sourceFolders = findModuleSrc(module);
-        module.orderEntries.add(new ModuleEntry("testDep1", true, OrderEntry.Scope.COMPILE));
-        module.orderEntries.add(new ModuleEntry("testDep2", false, OrderEntry.Scope.RUNTIME));
-        module.orderEntries.add(new ModuleEntry("testDep3", true, OrderEntry.Scope.TEST));
-        module.orderEntries.add(new ModuleEntry("testDep4", true, OrderEntry.Scope.PROVIDED));
-        modules.add(module);
+        forgeModule = new Module();
+        forgeModule.NAME = "Forge";
+        forgeModule.CONTENT_ROOT = new File("Forge");
+        forgeModule.sourceFolders.addAll(findModuleSrc(forgeModule));
+        //forgeModule.orderEntries.add(new ModuleEntry("testDep1", true, Scope.COMPILE));
+        //forgeModule.orderEntries.add(new ModuleEntry("testDep2", false, Scope.RUNTIME));
+        //forgeModule.orderEntries.add(new ModuleEntry("testDep3", true, Scope.TEST));
+        //forgeModule.orderEntries.add(new ModuleEntry("testDep4", true, Scope.PROVIDED));
+        modules.add(forgeModule);
     }
 
-    //TODO... Im a little confused as to what you were trying to tell me to do. I was asking for defaults when a module is created. Is that what this is meant to return?
     public static List<String> findModuleSrc(Module module) {
-        return new ArrayList<String>(){{add("src/main/resources");}};
+        List<String> list = new ArrayList<>();
+
+        if (module.NAME.equals("Forge")) {
+            list.add(new File(module.CONTENT_ROOT, "src/main/java").getAbsolutePath());
+            list.add(new File(module.CONTENT_ROOT, "src/main/resources").getAbsolutePath());
+            list.add(new File(module.CONTENT_ROOT, "projects/Forge/src/main/java").getAbsolutePath());
+            list.add(new File(module.CONTENT_ROOT, "projects/Forge/src/main/resources").getAbsolutePath());
+            list.add(new File(module.CONTENT_ROOT, "projects/Forge/src/main/start").getAbsolutePath());
+        } else {
+            list.add(new File(module.CONTENT_ROOT, "src/main/java").getAbsolutePath());
+            list.add(new File(module.CONTENT_ROOT, "src/main/resources").getAbsolutePath());
+        }
+
+        return list;
+    }
+
+    public static void onModuleAdded(Module module) {
+        modules.add(module);
+        module.orderEntries.add(new ModuleEntry("Forge", false, Scope.PROVIDED));
+        forgeModule.orderEntries.add(new ModuleEntry(module.NAME, false, Scope.RUNTIME));
     }
 
     public static void importSetup(File fileToImport) {
