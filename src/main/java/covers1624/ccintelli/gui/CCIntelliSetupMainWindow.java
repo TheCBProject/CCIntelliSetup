@@ -12,8 +12,6 @@ import covers1624.ccintelli.module.OrderEntry;
 import covers1624.ccintelli.util.logger.LogHelper;
 
 import javax.swing.*;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -25,7 +23,7 @@ import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * @author brand
@@ -57,6 +55,9 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         setupModuleTree();
         setupDepTable();
         reloadModuleTree();
+
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
     }
 
     /**
@@ -357,20 +358,19 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                         .addGroup(leftModulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(jScrollPane1)
                                 .addGroup(leftModulePanelLayout.createSequentialGroup()
-                                        .addComponent(addModuleField, GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(addModuleButton)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(removeModuleButton)))
-                        .addContainerGap())
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                                        .addComponent(removeModuleButton))
+                                .addComponent(addModuleField)))
         );
         leftModulePanelLayout.setVerticalGroup(leftModulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(leftModulePanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addModuleField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(leftModulePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(addModuleField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(addModuleButton)
                                 .addComponent(removeModuleButton)))
         );
@@ -475,7 +475,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                                         .addGap(0, 0, Short.MAX_VALUE))
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                .addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
+                                                .addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
                                                 .addComponent(selectedModuleDirectoryField)
                                                 .addComponent(jScrollPane2)
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -800,19 +800,32 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
             return;
         }
 
-        String dep = JOptionPane.showInputDialog(this, "Enter Dep Name");
+        java.util.List<String> selection = new ArrayList<>();
+
+        for (Module module : GuiFields.modules) {
+            boolean canAdd = true;
+            for (OrderEntry entry : selectedModule.orderEntries) {
+                if (entry instanceof ModuleEntry && ((ModuleEntry) entry).NAME.equals(module.NAME)) {
+                    canAdd = false;
+                }
+            }
+
+            if (canAdd && !module.NAME.equals(selectedModule.NAME)) {
+                selection.add(module.NAME);
+            }
+        }
+
+        if (selection.size() == 0) {
+            JOptionPane.showMessageDialog(this, "There are no modules that can be added as a dependency.", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String dep = (String) JOptionPane.showInputDialog(this, "Please select a module", "Select Module", JOptionPane.QUESTION_MESSAGE, null, selection.toArray(), selection.get(0));
         if (dep == null || dep.isEmpty()) {
             return;
         }
 
-        for (OrderEntry entry : selectedModule.orderEntries) {
-            if (entry instanceof ModuleEntry && ((ModuleEntry) entry).NAME.equals(dep)) {
-                JOptionPane.showMessageDialog(this, "That Dep already exists!", "Error", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-        }
-
-        selectedModule.orderEntries.add(new ModuleEntry(dep, false, OrderEntry.Scope.COMPILE));
+        selectedModule.orderEntries.add(new ModuleEntry(dep, false, OrderEntry.Scope.PROVIDED));
         moduleSelected(selectedModule);
     }
 
@@ -825,6 +838,11 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         int row = depTable.getSelectedRow();
         if (row == -1 || row >= selectedModuleEntries.size()) {
             JOptionPane.showMessageDialog(this, "Please select a dep!", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (selectedModuleEntries.get(row).NAME.equals("Forge")) {
+            JOptionPane.showMessageDialog(this, "You can not remove forge as a dependency!", "Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -907,53 +925,53 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         rootNode = new DefaultMutableTreeNode("Modules");
         treeModel = new DefaultTreeModel(rootNode);
         moduleTree.setModel(treeModel);
-        moduleTree.setEditable(true);
-        treeModel.addTreeModelListener(new TreeModelListener() {
-            @Override
-            public void treeNodesChanged(TreeModelEvent e) {
-                if (e.getChildIndices() == null) {
-                    return;
-                }
-
-                DefaultMutableTreeNode n = (DefaultMutableTreeNode) e.getTreePath().getLastPathComponent();
-                ModuleNode node = (ModuleNode) n.getChildAt(e.getChildIndices()[0]);
-
-                String newName = node.getUserObject().toString();
-                if (!newName.equals(node.module.NAME)) {
-                    boolean cancelRename = false;
-                    for (Module module : GuiFields.modules) {
-                        if (module.NAME.equals(newName)) {
-                            cancelRename = true;
-                            break;
-                        }
-                    }
-
-                    if (cancelRename) {
-                        reloadModuleTree();
-                        JOptionPane.showMessageDialog(CCIntelliSetupMainWindow.this, "There is already a module with that name!\nPlease choose another name or rename the existing module.", "Error", JOptionPane.WARNING_MESSAGE);
-                    }
-                    else {
-                        LogHelper.info("Renaming module: " + node.module.NAME + " -> " + newName);
-                        node.module.NAME = newName;
-                    }
-                }
-            }
-
-            @Override
-            public void treeNodesInserted(TreeModelEvent e) {
-
-            }
-
-            @Override
-            public void treeNodesRemoved(TreeModelEvent e) {
-
-            }
-
-            @Override
-            public void treeStructureChanged(TreeModelEvent e) {
-
-            }
-        });
+        moduleTree.setEditable(false);
+//        treeModel.addTreeModelListener(new TreeModelListener() {
+//            @Override
+//            public void treeNodesChanged(TreeModelEvent e) {
+//                if (e.getChildIndices() == null) {
+//                    return;
+//                }
+//
+//                DefaultMutableTreeNode n = (DefaultMutableTreeNode) e.getTreePath().getLastPathComponent();
+//                ModuleNode node = (ModuleNode) n.getChildAt(e.getChildIndices()[0]);
+//
+//                String newName = node.getUserObject().toString();
+//                if (!newName.equals(node.module.NAME)) {
+//                    boolean cancelRename = false;
+//                    for (Module module : GuiFields.modules) {
+//                        if (module.NAME.equals(newName)) {
+//                            cancelRename = true;
+//                            break;
+//                        }
+//                    }
+//
+//                    if (cancelRename) {
+//                        reloadModuleTree();
+//                        JOptionPane.showMessageDialog(CCIntelliSetupMainWindow.this, "There is already a module with that name!\nPlease choose another name or rename the existing module.", "Error", JOptionPane.WARNING_MESSAGE);
+//                    }
+//                    else {
+//                        LogHelper.info("Renaming module: " + node.module.NAME + " -> " + newName);
+//                        node.module.NAME = newName;
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void treeNodesInserted(TreeModelEvent e) {
+//
+//            }
+//
+//            @Override
+//            public void treeNodesRemoved(TreeModelEvent e) {
+//
+//            }
+//
+//            @Override
+//            public void treeStructureChanged(TreeModelEvent e) {
+//
+//            }
+//        });
     }
 
     private void setupDepTable() {
@@ -1015,7 +1033,9 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         }
 
         selectedModuleDirectoryField.setText(module.CONTENT_ROOT.getAbsolutePath());
-        module.sourceFolders.forEach(srcListModel::addElement);
+        for (String src : module.sourceFolders) {
+            srcListModel.addElement(src);
+        }
 
         for (OrderEntry dep : module.orderEntries) {
             if (dep instanceof ModuleEntry) {
