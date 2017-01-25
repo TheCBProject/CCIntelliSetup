@@ -972,6 +972,18 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 //
 //            }
 //        });
+
+        selectedModuleSourceList.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (!new File(value.toString()).exists()) {
+                    setBackground(Color.RED);
+                }
+                return c;
+            }
+        });
+
     }
 
     private void setupDepTable() {
