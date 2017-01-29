@@ -2,6 +2,7 @@ package covers1624.ccintelli.launch;
 
 import covers1624.ccintelli.gui.CCIntelliSetupConsole;
 import covers1624.ccintelli.gui.CCIntelliSetupMainWindow;
+import covers1624.ccintelli.gui.GuiFields;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.util.Utils;
 import covers1624.ccintelli.util.logger.LogHelper;
@@ -77,7 +78,7 @@ public class Launch {
 
 		File forgeXML = new File(FORGE, "projects/Forge/Forge.iml");
 		File newXML = new File(MODULES, "Forge.iml");
-		Module forgeModule = Module.buildForgeModule(forgeXML, FORGE);
+		Module forgeModule = Module.buildForgeModule(forgeXML, GuiFields.forgeModule);
 		Utils.tryCreateFile(newXML);
 		forgeModule.writeXML(newXML);
 	}

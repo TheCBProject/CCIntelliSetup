@@ -26,7 +26,7 @@ import java.util.List;
 public class Module {
 
 	public String NAME;
-	public String GROUP;
+	public String GROUP = "";
 	public File CONTENT_ROOT;
 	public List<String> sourceFolders = new LinkedList<>();
 	public List<OrderEntry> orderEntries = new LinkedList<>();

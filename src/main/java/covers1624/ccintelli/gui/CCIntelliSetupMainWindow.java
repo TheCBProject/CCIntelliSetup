@@ -9,7 +9,6 @@ import covers1624.ccintelli.launch.Launch;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.module.ModuleEntry;
 import covers1624.ccintelli.module.OrderEntry;
-import covers1624.ccintelli.util.logger.LogHelper;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -23,18 +22,24 @@ import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * @author brand
  */
 public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
-    private DefaultMutableTreeNode rootNode;
+    private GroupNode rootNode;
     private DefaultTreeModel treeModel;
     private Module selectedModule = null;
+    private ModuleNode rcNode = null;
     private DefaultListModel<String> srcListModel = new DefaultListModel<>();
     private LinkedList<ModuleEntry> selectedModuleEntries = new LinkedList<>();
+    private PopupMenu treeRCMenu = new PopupMenu();
+    private Map<String, GroupNode> groupNodes = new HashMap<>();
 
     /**
      * Creates new form CCIntelliSetupMainWindow
@@ -57,7 +62,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         reloadModuleTree();
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
 
     /**
@@ -189,69 +194,14 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
         GroupLayout leftSetupPanelLayout = new GroupLayout(leftSetupPanel);
         leftSetupPanel.setLayout(leftSetupPanelLayout);
-        leftSetupPanelLayout.setHorizontalGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(leftSetupPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addGroup(leftSetupPanelLayout.createSequentialGroup()
-                                        .addComponent(workspaceDirField)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(workspaceDirSelect))
-                                .addGroup(leftSetupPanelLayout.createSequentialGroup()
-                                        .addComponent(moduleDirField)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(moduleDirSelect))
-                                .addGroup(leftSetupPanelLayout.createSequentialGroup()
-                                        .addComponent(runDirField)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(runDirSelect))
-                                .addGroup(leftSetupPanelLayout.createSequentialGroup()
-                                        .addComponent(compilerOutDirField)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(compilerOutDirSelect))
-                                .addGroup(leftSetupPanelLayout.createSequentialGroup()
-                                        .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel3)
-                                                .addComponent(jLabel4)
-                                                .addComponent(jLabel5)
-                                                .addComponent(jLabel6))
-                                        .addGap(0, 264, Short.MAX_VALUE)))
-                        .addContainerGap())
-        );
-        leftSetupPanelLayout.setVerticalGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(leftSetupPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(workspaceDirField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(workspaceDirSelect))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(moduleDirField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(moduleDirSelect))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(runDirField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(runDirSelect))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel6)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(compilerOutDirField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(compilerOutDirSelect))
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        leftSetupPanelLayout.setHorizontalGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(leftSetupPanelLayout.createSequentialGroup().addContainerGap().addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(leftSetupPanelLayout.createSequentialGroup().addComponent(workspaceDirField).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(workspaceDirSelect)).addGroup(leftSetupPanelLayout.createSequentialGroup().addComponent(moduleDirField).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(moduleDirSelect)).addGroup(leftSetupPanelLayout.createSequentialGroup().addComponent(runDirField).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(runDirSelect)).addGroup(leftSetupPanelLayout.createSequentialGroup().addComponent(compilerOutDirField).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(compilerOutDirSelect)).addGroup(leftSetupPanelLayout.createSequentialGroup().addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(jLabel3).addComponent(jLabel4).addComponent(jLabel5).addComponent(jLabel6)).addGap(0, 264, Short.MAX_VALUE))).addContainerGap()));
+        leftSetupPanelLayout.setVerticalGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(leftSetupPanelLayout.createSequentialGroup().addContainerGap().addComponent(jLabel3).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(workspaceDirField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(workspaceDirSelect)).addGap(18, 18, 18).addComponent(jLabel4).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(moduleDirField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(moduleDirSelect)).addGap(18, 18, 18).addComponent(jLabel5).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(runDirField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(runDirSelect)).addGap(18, 18, 18).addComponent(jLabel6).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(compilerOutDirField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(compilerOutDirSelect)).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
         rightSetupPanel.setBorder(BorderFactory.createEtchedBorder());
 
         jLabel2.setText("Compiler select:");
 
-        compilerSelector.setModel(new DefaultComboBoxModel<>(new String[] { "Eclipse", "Javac" }));
+        compilerSelector.setModel(new DefaultComboBoxModel<>(new String[]{"Eclipse", "Javac"}));
         compilerSelector.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 compilerSelectorActionPerformed(evt);
@@ -268,56 +218,13 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
         GroupLayout rightSetupPanelLayout = new GroupLayout(rightSetupPanel);
         rightSetupPanel.setLayout(rightSetupPanelLayout);
-        rightSetupPanelLayout.setHorizontalGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(rightSetupPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addGroup(rightSetupPanelLayout.createSequentialGroup()
-                                        .addComponent(jLabel2)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(compilerSelector, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                .addGroup(rightSetupPanelLayout.createSequentialGroup()
-                                        .addComponent(jLabel1)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(addNonNullAssertionsCheckbox)))
-                        .addContainerGap(239, Short.MAX_VALUE))
-        );
-        rightSetupPanelLayout.setVerticalGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(rightSetupPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel2)
-                                .addComponent(compilerSelector, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel1)
-                                .addComponent(addNonNullAssertionsCheckbox))
-                        .addContainerGap(369, Short.MAX_VALUE))
-        );
+        rightSetupPanelLayout.setHorizontalGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(rightSetupPanelLayout.createSequentialGroup().addContainerGap().addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(rightSetupPanelLayout.createSequentialGroup().addComponent(jLabel2).addGap(18, 18, 18).addComponent(compilerSelector, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addGroup(rightSetupPanelLayout.createSequentialGroup().addComponent(jLabel1).addGap(18, 18, 18).addComponent(addNonNullAssertionsCheckbox))).addContainerGap(239, Short.MAX_VALUE)));
+        rightSetupPanelLayout.setVerticalGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(rightSetupPanelLayout.createSequentialGroup().addContainerGap().addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(jLabel2).addComponent(compilerSelector, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addGap(18, 18, 18).addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(jLabel1).addComponent(addNonNullAssertionsCheckbox)).addContainerGap(369, Short.MAX_VALUE)));
 
         GroupLayout setupPanelLayout = new GroupLayout(setupPanel);
         setupPanel.setLayout(setupPanelLayout);
-        setupPanelLayout.setHorizontalGroup(setupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(setupPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(setupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addGroup(setupPanelLayout.createSequentialGroup()
-                                        .addComponent(leftSetupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(rightSetupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addComponent(setupLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
-        );
-        setupPanelLayout.setVerticalGroup(setupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(GroupLayout.Alignment.TRAILING, setupPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(setupLabel)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(setupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(rightSetupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(leftSetupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
-        );
+        setupPanelLayout.setHorizontalGroup(setupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(setupPanelLayout.createSequentialGroup().addContainerGap().addGroup(setupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(setupPanelLayout.createSequentialGroup().addComponent(leftSetupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(rightSetupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addComponent(setupLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addContainerGap()));
+        setupPanelLayout.setVerticalGroup(setupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(GroupLayout.Alignment.TRAILING, setupPanelLayout.createSequentialGroup().addContainerGap().addComponent(setupLabel).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(setupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(rightSetupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(leftSetupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addContainerGap()));
 
         mainTabbedPane.addTab("Setup", setupPanel);
 
@@ -335,6 +242,11 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         jScrollPane1.setViewportView(moduleTree);
 
         addModuleField.setToolTipText("New Module Name.");
+        addModuleField.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent evt) {
+                addModuleFieldKeyPressed(evt);
+            }
+        });
 
         addModuleButton.setText("Add Module");
         addModuleButton.addActionListener(new ActionListener() {
@@ -352,28 +264,8 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
         GroupLayout leftModulePanelLayout = new GroupLayout(leftModulePanel);
         leftModulePanel.setLayout(leftModulePanelLayout);
-        leftModulePanelLayout.setHorizontalGroup(leftModulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(leftModulePanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(leftModulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(jScrollPane1)
-                                .addGroup(leftModulePanelLayout.createSequentialGroup()
-                                        .addComponent(addModuleButton)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                                        .addComponent(removeModuleButton))
-                                .addComponent(addModuleField)))
-        );
-        leftModulePanelLayout.setVerticalGroup(leftModulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(leftModulePanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addModuleField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(leftModulePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(addModuleButton)
-                                .addComponent(removeModuleButton)))
-        );
+        leftModulePanelLayout.setHorizontalGroup(leftModulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(leftModulePanelLayout.createSequentialGroup().addContainerGap().addGroup(leftModulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(leftModulePanelLayout.createSequentialGroup().addComponent(addModuleButton).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE).addComponent(removeModuleButton)).addComponent(addModuleField).addComponent(jScrollPane1, GroupLayout.Alignment.TRAILING)).addContainerGap()));
+        leftModulePanelLayout.setVerticalGroup(leftModulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(leftModulePanelLayout.createSequentialGroup().addContainerGap().addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(addModuleField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(leftModulePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(addModuleButton).addComponent(removeModuleButton)).addContainerGap()));
 
         jPanel1.setBorder(BorderFactory.createEtchedBorder());
 
@@ -432,20 +324,11 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         jScrollPane4.setHorizontalScrollBar(null);
 
         depTable.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0)));
-        depTable.setModel(depTablelModel = new DefaultTableModel(
-                new Object [][] {
-                        { new Boolean(false), null, null}
-                },
-                new String [] {
-                        "Export", "Name", "Scope"
-                }
-        ) {
-            Class[] types = new Class [] {
-                    Boolean.class, String.class, String.class
-            };
+        depTable.setModel(depTablelModel = new DefaultTableModel(new Object[][]{{new Boolean(false), null, null}}, new String[]{"Export", "Name", "Scope"}) {
+            Class[] types = new Class[]{Boolean.class, String.class, String.class};
 
             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+                return types[columnIndex];
             }
         });
         depTable.setToolTipText("");
@@ -464,89 +347,20 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(addModuleDep)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(removeModuleDep)
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                .addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
-                                                .addComponent(selectedModuleDirectoryField)
-                                                .addComponent(jScrollPane2)
-                                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                                .addComponent(jLabel7)
-                                                                .addComponent(jLabel8)
-                                                                .addComponent(jLabel9)
-                                                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                                                        .addComponent(addModuleSrc)
-                                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                        .addComponent(removeModuleSrc)))
-                                                        .addGap(0, 0, Short.MAX_VALUE))
-                                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                                        .addGap(0, 0, Short.MAX_VALUE)
-                                                        .addComponent(editModuleSrc, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)))
-                                        .addContainerGap())))
-        );
-        jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(selectedModuleDirectoryField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(addModuleSrc)
-                                .addComponent(removeModuleSrc)
-                                .addComponent(editModuleSrc))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel9)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane4, GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(addModuleDep)
-                                .addComponent(removeModuleDep)))
-        );
+        jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addComponent(addModuleDep).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(removeModuleDep).addGap(0, 0, Short.MAX_VALUE)).addGroup(jPanel1Layout.createSequentialGroup().addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE).addComponent(selectedModuleDirectoryField).addComponent(jScrollPane2).addGroup(jPanel1Layout.createSequentialGroup().addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(jLabel7).addComponent(jLabel8).addComponent(jLabel9).addGroup(jPanel1Layout.createSequentialGroup().addComponent(addModuleSrc).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(removeModuleSrc))).addGap(0, 0, Short.MAX_VALUE)).addGroup(jPanel1Layout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE).addComponent(editModuleSrc, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE))).addContainerGap()))));
+        jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addComponent(jLabel7).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(selectedModuleDirectoryField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addGap(18, 18, 18).addComponent(jLabel8).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(addModuleSrc).addComponent(removeModuleSrc).addComponent(editModuleSrc)).addGap(18, 18, 18).addComponent(jLabel9).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(jScrollPane4, GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(addModuleDep).addComponent(removeModuleDep))));
 
         GroupLayout modulePanelLayout = new GroupLayout(modulePanel);
         modulePanel.setLayout(modulePanelLayout);
-        modulePanelLayout.setHorizontalGroup(modulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(modulePanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(leftModulePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-        );
-        modulePanelLayout.setVerticalGroup(modulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(GroupLayout.Alignment.TRAILING, modulePanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(modulePanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(leftModulePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
-        );
+        modulePanelLayout.setHorizontalGroup(modulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(modulePanelLayout.createSequentialGroup().addContainerGap().addComponent(leftModulePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addContainerGap()));
+        modulePanelLayout.setVerticalGroup(modulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(GroupLayout.Alignment.TRAILING, modulePanelLayout.createSequentialGroup().addContainerGap().addGroup(modulePanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING).addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(leftModulePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addContainerGap()));
 
         mainTabbedPane.addTab("Module viewer tree", modulePanel);
 
         GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(mainTabbedPane, GroupLayout.Alignment.TRAILING)
-        );
-        mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(mainTabbedPane, GroupLayout.Alignment.TRAILING)
-        );
+        mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(mainTabbedPane, GroupLayout.Alignment.TRAILING));
+        mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(mainTabbedPane, GroupLayout.Alignment.TRAILING));
 
         fileMenu.setText("File");
 
@@ -584,12 +398,8 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
 
         pack();
     }// </editor-fold>
@@ -662,13 +472,38 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         int selRow = moduleTree.getRowForLocation(e.getX(), e.getY());
         TreePath selPath = moduleTree.getPathForLocation(e.getX(), e.getY());
         if (selRow != -1 && selPath != null) {
-            if (e.getClickCount() == 1) {
-                if (selPath.getLastPathComponent() instanceof ModuleNode) {
-                    moduleSelected(((ModuleNode) selPath.getLastPathComponent()).module);
+            Object component = selPath.getLastPathComponent();
+
+            //Left Click
+            if (e.getButton() == 1 && e.getClickCount() == 1) {
+                if (component instanceof ModuleNode) {
+                    moduleSelected(((ModuleNode) component).module);
                 }
             }
-            else if (e.getClickCount() == 2) {
+            //Right Click
+            else if (e.getButton() == 3) {
+                treeRCMenu.removeAll();
+                if (component instanceof ModuleNode) {
+                    if (((ModuleNode) component).module.NAME.equals("Forge")) {
+                        return;
+                    }
+
+                    rcNode = (ModuleNode) component;
+
+                    if (!groupNodes.isEmpty()) {
+                        treeRCMenu.add("Move to sub module");
+                    }
+
+                    treeRCMenu.add("Move to new sub module");
+
+                    if (!((ModuleNode) component).module.GROUP.isEmpty()) {
+                        treeRCMenu.add("Remove from sub module");
+                    }
+
+                    treeRCMenu.show(moduleTree, e.getX(), e.getY());
+                }
             }
+
 
             if (moduleTree.getEditingPath() != null) {
                 String editing = moduleTree.getEditingPath().getLastPathComponent().toString();
@@ -682,6 +517,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private void addModuleButtonActionPerformed(ActionEvent evt) {
         if (addModuleField.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "You must first enter a name for this module!", "Error", JOptionPane.WARNING_MESSAGE);
+            reloadModuleTree();
             return;
         }
 
@@ -699,6 +535,12 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         GuiFields.onModuleAdded(module);
         reloadModuleTree();
         addModuleField.setText("");
+    }
+
+    private void addModuleFieldKeyPressed(KeyEvent evt) {
+        if (evt.getKeyCode() == 10) {
+            addModuleButtonActionPerformed(null);
+        }
     }
 
     private void removeModuleButtonActionPerformed(ActionEvent evt) {
@@ -922,10 +764,14 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
     private void setupModuleTree() {
         moduleTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        rootNode = new DefaultMutableTreeNode("Modules");
+        rootNode = new GroupNode("Modules");
         treeModel = new DefaultTreeModel(rootNode);
         moduleTree.setModel(treeModel);
         moduleTree.setEditable(false);
+
+        add(treeRCMenu);
+        treeRCMenu.addActionListener(this::treeMenuAction);
+
 //        treeModel.addTreeModelListener(new TreeModelListener() {
 //            @Override
 //            public void treeNodesChanged(TreeModelEvent e) {
@@ -1021,14 +867,57 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     }
 
     public void reloadModuleTree() {
+//        Enumeration children = rootNode.children();
+//        while (children.hasMoreElements()) {
+//            LogHelper.info(children.nextElement());
+//        }
         rootNode.removeAllChildren();
+        groupNodes.clear();
+
         for (Module module : GuiFields.modules) {
             ModuleNode moduleNode = new ModuleNode(module);
-            rootNode.add(moduleNode);
-            LogHelper.info(module.NAME);
+
+            if (!module.GROUP.isEmpty()) {
+                if (groupNodes.containsKey(module.GROUP)) {
+                    groupNodes.get(module.GROUP).add(moduleNode);
+                }
+                else {
+                    GroupNode node = createGroupChain(module.GROUP, "");
+                    if (node.getParent() == null) {
+                        rootNode.add(node);
+                    }
+                    groupNodes.get(module.GROUP).add(moduleNode);
+                }
+            }
+            else {
+                rootNode.add(moduleNode);
+            }
         }
+
         treeModel.reload();
-        moduleTree.expandRow(0);
+        for (int i = 0; i < moduleTree.getRowCount(); i++) {
+            moduleTree.expandRow(i);
+        }
+    }
+
+    private GroupNode createGroupChain(String group, String parentGroup) {
+        GroupNode node;
+        String name = group.contains("/") ? group.substring(0, group.indexOf("/")) : group;
+
+        if (groupNodes.containsKey(group)) {
+            node = groupNodes.get(group);
+        }
+        else {
+            node = new GroupNode(name);
+            groupNodes.put(parentGroup + name, node);
+        }
+
+        if (group.contains("/")) {
+            GroupNode child = createGroupChain(group.substring(group.indexOf("/") + 1), parentGroup + name + "/");
+            node.add(child);
+        }
+        
+        return node;
     }
 
     public void moduleSelected(Module module) {
@@ -1051,9 +940,47 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
         for (OrderEntry dep : module.orderEntries) {
             if (dep instanceof ModuleEntry) {
-                depTablelModel.addRow(new Object[] {dep.export, ((ModuleEntry) dep).NAME, dep.scope});
+                depTablelModel.addRow(new Object[]{dep.export, ((ModuleEntry) dep).NAME, dep.scope});
                 selectedModuleEntries.add((ModuleEntry) dep);
             }
+        }
+    }
+
+    private void treeMenuAction(ActionEvent event) {
+        String action = event.getActionCommand();
+        if (action.equals("Move to new sub module")) {
+            String newSub = JOptionPane.showInputDialog(this, "Enter new sub module name:");
+
+            if (newSub == null || newSub.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "You must enter a valid name", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (rcNode.module.GROUP.isEmpty()) {
+                rcNode.module.GROUP = newSub;
+            }
+            else {
+                rcNode.module.GROUP += "/" + newSub;
+            }
+            reloadModuleTree();
+        }
+        else if (action.equals("Remove from sub module")) {
+            if (rcNode.module.GROUP.contains("/")) {
+                String g = rcNode.module.GROUP;
+                rcNode.module.GROUP = g.substring(0, g.lastIndexOf("/"));
+            }
+            else {
+                rcNode.module.GROUP += "";
+            }
+            reloadModuleTree();
+        }
+        else if (action.equals("Move to sub module")) {
+            Object group = JOptionPane.showInputDialog(this, "Select Sub Group", "Select Group", JOptionPane.PLAIN_MESSAGE, null, groupNodes.keySet().toArray(), groupNodes.keySet().toArray()[0]);
+            if (group == null) {
+                return;
+            }
+            rcNode.module.GROUP = group.toString();
+            reloadModuleTree();
         }
     }
 
