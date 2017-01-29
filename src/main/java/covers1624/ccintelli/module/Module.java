@@ -26,6 +26,7 @@ import java.util.List;
 public class Module {
 
 	public String NAME;
+	public String GROUP;
 	public File CONTENT_ROOT;
 	public List<String> sourceFolders = new LinkedList<>();
 	public List<OrderEntry> orderEntries = new LinkedList<>();
@@ -78,11 +79,8 @@ public class Module {
 		}
 	}
 
-	public static Module buildForgeModule(File currentXML, File forgeDir) {
+	public static Module buildForgeModule(File currentXML, Module forgeModule) {
 		try {
-			Module module = new Module();
-			module.CONTENT_ROOT = forgeDir;
-			module.NAME = "Forge";
 
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -101,10 +99,10 @@ public class Module {
 							case "sourceFolder":
 								OrderEntry entry = new SimpleEntry(Type.SOURCE_FOLDER);
 								entry.extra.put("forTests", entryElement.getAttribute("forTests"));
-								module.orderEntries.add(entry);
+								forgeModule.orderEntries.add(entry);
 								break;
 							case "inheritedJdk":
-								module.orderEntries.add(new SimpleEntry(Type.INHERITED_JDK));
+								forgeModule.orderEntries.add(new SimpleEntry(Type.INHERITED_JDK));
 								break;
 							case "module-library":
 								boolean exported = entryElement.hasAttribute("exported");
@@ -113,7 +111,7 @@ public class Module {
 								for (int j = 0; j < nodes.getLength(); j++) {
 									Node node1 = nodes.item(j);
 									if (node1.getNodeType() == Node.ELEMENT_NODE) {
-										module.orderEntries.add(LibraryEntry.fromElement(((Element) node1), exported, scope));
+										forgeModule.orderEntries.add(LibraryEntry.fromElement(((Element) node1), exported, scope));
 										break;
 									}
 								}
@@ -126,13 +124,13 @@ public class Module {
 					}
 				}
 			}
-			module.sourceFolders.add(new File(forgeDir, "src/main/java").getAbsolutePath());
-			module.sourceFolders.add(new File(forgeDir, "src/main/resources").getAbsolutePath());
-			module.sourceFolders.add(new File(forgeDir, "projects/Forge/src/main/java").getAbsolutePath());
-			module.sourceFolders.add(new File(forgeDir, "projects/Forge/src/main/resources").getAbsolutePath());
-			module.sourceFolders.add(new File(forgeDir, "projects/Forge/src/main/start").getAbsolutePath());
+			//module.sourceFolders.add(new File(forgeDir, "src/main/java").getAbsolutePath());
+			//module.sourceFolders.add(new File(forgeDir, "src/main/resources").getAbsolutePath());
+			//module.sourceFolders.add(new File(forgeDir, "projects/Forge/src/main/java").getAbsolutePath());
+			//module.sourceFolders.add(new File(forgeDir, "projects/Forge/src/main/resources").getAbsolutePath());
+			//module.sourceFolders.add(new File(forgeDir, "projects/Forge/src/main/start").getAbsolutePath());
 
-			return module;
+			return forgeModule;
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to parse existing forge XML!", e);
 		}
