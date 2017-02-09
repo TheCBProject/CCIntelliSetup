@@ -29,7 +29,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 /**
- * @author brand
+ * @author brandon3055
  */
 public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
@@ -41,8 +41,8 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private LinkedList<ModuleEntry> selectedModuleEntries = new LinkedList<>();
     private PopupMenu treeRCMenu = new PopupMenu();
     private Map<String, GroupNode> groupNodes = new HashMap<>();
-    private static final String MOVE_TO_SUB = "Move to sub module";
-    private static final String MOVE_TO_NEW_SUB = "Move to new sub module";
+    private static final String MOVE_TO_SUB = "Move to module group";
+    private static final String MOVE_TO_NEW_SUB = "Move to new module group";
     private static final String REMOVE_FROM_SUB = "Remove from module group";
 
     /**
