@@ -50,7 +50,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
      */
     public CCIntelliSetupMainWindow() {
         initComponents();
-        setTitle("TODO... @Covers you can set this in the constructor.");
+        setTitle("CCIntelliSetup! \\o/");
 
         workspaceDirField.setText(Launch.WORKSPACE.getAbsolutePath());
         moduleDirField.setText(Launch.MODULES.getAbsolutePath());
