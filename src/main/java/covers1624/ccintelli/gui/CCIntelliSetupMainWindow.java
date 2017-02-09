@@ -9,6 +9,7 @@ import covers1624.ccintelli.launch.Launch;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.module.ModuleEntry;
 import covers1624.ccintelli.module.OrderEntry;
+import covers1624.ccintelli.util.logger.LogHelper;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -40,6 +41,9 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private LinkedList<ModuleEntry> selectedModuleEntries = new LinkedList<>();
     private PopupMenu treeRCMenu = new PopupMenu();
     private Map<String, GroupNode> groupNodes = new HashMap<>();
+    private static final String MOVE_TO_SUB = "Move to sub module";
+    private static final String MOVE_TO_NEW_SUB = "Move to new sub module";
+    private static final String REMOVE_FROM_SUB = "Remove from module group";
 
     /**
      * Creates new form CCIntelliSetupMainWindow
@@ -491,13 +495,13 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                     rcNode = (ModuleNode) component;
 
                     if (!groupNodes.isEmpty()) {
-                        treeRCMenu.add("Move to sub module");
+                        treeRCMenu.add(MOVE_TO_SUB);
                     }
 
-                    treeRCMenu.add("Move to new sub module");
+                    treeRCMenu.add(MOVE_TO_NEW_SUB);
 
                     if (!((ModuleNode) component).module.GROUP.isEmpty()) {
-                        treeRCMenu.add("Remove from sub module");
+                        treeRCMenu.add(REMOVE_FROM_SUB);
                     }
 
                     treeRCMenu.show(moduleTree, e.getX(), e.getY());
@@ -916,7 +920,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
             GroupNode child = createGroupChain(group.substring(group.indexOf("/") + 1), parentGroup + name + "/");
             node.add(child);
         }
-        
+
         return node;
     }
 
@@ -948,7 +952,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
     private void treeMenuAction(ActionEvent event) {
         String action = event.getActionCommand();
-        if (action.equals("Move to new sub module")) {
+        if (action.equals(MOVE_TO_NEW_SUB)) {
             String newSub = JOptionPane.showInputDialog(this, "Enter new sub module name:");
 
             if (newSub == null || newSub.isEmpty()) {
@@ -964,17 +968,18 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
             }
             reloadModuleTree();
         }
-        else if (action.equals("Remove from sub module")) {
+        else if (action.equals(REMOVE_FROM_SUB)) {
+            LogHelper.info(rcNode.module.GROUP);
             if (rcNode.module.GROUP.contains("/")) {
                 String g = rcNode.module.GROUP;
                 rcNode.module.GROUP = g.substring(0, g.lastIndexOf("/"));
             }
             else {
-                rcNode.module.GROUP += "";
+                rcNode.module.GROUP = "";
             }
             reloadModuleTree();
         }
-        else if (action.equals("Move to sub module")) {
+        else if (action.equals(MOVE_TO_SUB)) {
             Object group = JOptionPane.showInputDialog(this, "Select Sub Group", "Select Group", JOptionPane.PLAIN_MESSAGE, null, groupNodes.keySet().toArray(), groupNodes.keySet().toArray()[0]);
             if (group == null) {
                 return;
