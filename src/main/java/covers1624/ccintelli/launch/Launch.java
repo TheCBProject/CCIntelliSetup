@@ -5,7 +5,7 @@ import covers1624.ccintelli.gui.CCIntelliSetupMainWindow;
 import covers1624.ccintelli.gui.GuiFields;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.util.Utils;
-import covers1624.ccintelli.util.logger.LogHelper;
+import covers1624.ccintelli.util.LogHelper;
 import covers1624.launchwrapper.LaunchHandler;
 
 import javax.swing.*;
@@ -19,7 +19,6 @@ import java.io.InputStreamReader;
 public class Launch {
 
 	public static File BUILD_DIR;
-	public static File LOG_DIR;
 	public static File LIB_DIR;
 
 	public static File WORKSPACE;
@@ -38,7 +37,6 @@ public class Launch {
 	public static void main(String[] args) throws Exception {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		BUILD_DIR = new File(".", "build");
-		LOG_DIR = new File(BUILD_DIR, "logs");
 		LIB_DIR = new File(BUILD_DIR, "libs");
 		WORKSPACE = new File("Workspace");
 		PROJECT_RUN = new File(WORKSPACE, "run");
@@ -47,13 +45,11 @@ public class Launch {
 		FORGE = new File("Forge");
 
 		Utils.tryCreateDirectory(BUILD_DIR);
-		Utils.tryCreateDirectory(LOG_DIR);
 		Utils.tryCreateDirectory(LIB_DIR);
 
 		LaunchHandler.runPreLaunch("CCIntelliSetup", Launch.class.getResourceAsStream("/Dependencies.json"), LIB_DIR, null, null);
 
-		LogHelper.setLogFile(new File(LOG_DIR, "builder.log"));
-
+        LogHelper.info("CCIntelliSetup \\o/");
 		Thread consoleThread = new Thread() {
 			@Override
 			public void run() {

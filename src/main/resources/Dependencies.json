@@ -1,16 +1,24 @@
 {
-  "dependencies" : [
-    {
-      "url" : "http://jcenter.bintray.com/com/google/guava/guava/20.0/guava-20.0.jar",
-      "md5" : "F32A8A2524620DBECC9F6BF6A20C293F"
-    },
-    {
-      "url" : "http://jcenter.bintray.com/org/apache/commons/commons-io/1.3.2/commons-io-1.3.2.jar",
-      "md5" : "903C04D1FB5D4DC81D95E4BE93FF7ECD"
-    },
-    {
-      "url" : "http://jcenter.bintray.com/org/apache/commons/commons-compress/1.9/commons-compress-1.9.jar",
-      "md5" : "6C9CE8534B9E4C17E5DEA7A97425245C"
-    }
-  ]
+	"dependencies": [
+		{
+			"url": "http://jcenter.bintray.com/com/google/guava/guava/20.0/guava-20.0.jar",
+			"md5": "F32A8A2524620DBECC9F6BF6A20C293F"
+		},
+		{
+			"url": "http://jcenter.bintray.com/org/apache/commons/commons-io/1.3.2/commons-io-1.3.2.jar",
+			"md5": "903C04D1FB5D4DC81D95E4BE93FF7ECD"
+		},
+		{
+			"url": "http://jcenter.bintray.com/org/apache/commons/commons-compress/1.9/commons-compress-1.9.jar",
+			"md5": "6C9CE8534B9E4C17E5DEA7A97425245C"
+		},
+		{
+			"url": "http://jcenter.bintray.com/org/apache/logging/log4j/log4j-core/2.8/log4j-core-2.8.jar",
+			"md5": "C6D233BC8E9CFE5DA690059D27D9F88F"
+		},
+		{
+			"url": "http://jcenter.bintray.com/org/apache/logging/log4j/log4j-api/2.8/log4j-api-2.8.jar",
+			"md5": "311A37DBDE84E7C1EE4CF0AB1DCD2670"
+		}
+	]
 }

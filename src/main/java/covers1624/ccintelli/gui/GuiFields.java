@@ -4,7 +4,7 @@ import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.module.ModuleEntry;
 import covers1624.ccintelli.module.OrderEntry;
 import covers1624.ccintelli.module.OrderEntry.Scope;
-import covers1624.ccintelli.util.logger.LogHelper;
+import covers1624.ccintelli.util.LogHelper;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -3,7 +3,7 @@ package covers1624.ccintelli.module;
 import covers1624.ccintelli.module.OrderEntry.Scope;
 import covers1624.ccintelli.module.OrderEntry.Type;
 import covers1624.ccintelli.util.Utils;
-import covers1624.ccintelli.util.logger.LogHelper;
+import covers1624.ccintelli.util.LogHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -124,11 +124,6 @@ public class Module {
 					}
 				}
 			}
-			//module.sourceFolders.add(new File(forgeDir, "src/main/java").getAbsolutePath());
-			//module.sourceFolders.add(new File(forgeDir, "src/main/resources").getAbsolutePath());
-			//module.sourceFolders.add(new File(forgeDir, "projects/Forge/src/main/java").getAbsolutePath());
-			//module.sourceFolders.add(new File(forgeDir, "projects/Forge/src/main/resources").getAbsolutePath());
-			//module.sourceFolders.add(new File(forgeDir, "projects/Forge/src/main/start").getAbsolutePath());
 
 			return forgeModule;
 		} catch (Exception e) {
