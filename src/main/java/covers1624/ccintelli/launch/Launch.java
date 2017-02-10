@@ -37,7 +37,6 @@ public class Launch {
 
 	public static void main(String[] args) throws Exception {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		console = new CCIntelliSetupConsole();
 		BUILD_DIR = new File(".", "build");
 		LOG_DIR = new File(BUILD_DIR, "logs");
 		LIB_DIR = new File(BUILD_DIR, "libs");
@@ -54,9 +53,18 @@ public class Launch {
 		LaunchHandler.runPreLaunch("CCIntelliSetup", Launch.class.getResourceAsStream("/Dependencies.json"), LIB_DIR, null, null);
 
 		LogHelper.setLogFile(new File(LOG_DIR, "builder.log"));
-		console.setVisible(true);
-		window = new CCIntelliSetupMainWindow();
-		window.setVisible(true);
+
+		Thread consoleThread = new Thread() {
+			@Override
+			public void run() {
+				console = new CCIntelliSetupConsole();
+				console.setVisible(true);
+				window = new CCIntelliSetupMainWindow();
+				window.setVisible(true);
+			}
+		};
+		consoleThread.setDaemon(true);
+		consoleThread.start();
 
 //		run();
 
