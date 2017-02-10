@@ -65,10 +65,7 @@ public class Launch {
 	}
 
 	public static void run() throws Exception {
-		Utils.tryCreateDirectory(WORKSPACE);
-		Utils.tryCreateDirectory(MODULES);
-		Utils.tryCreateDirectory(PROJECT_RUN);
-		Utils.tryCreateDirectory(PROJECT_OUTPUT);
+
 
 		String gradlew = new File(FORGE, "gradlew.bat").getAbsolutePath();
 		ProcessBuilder builder = new ProcessBuilder();

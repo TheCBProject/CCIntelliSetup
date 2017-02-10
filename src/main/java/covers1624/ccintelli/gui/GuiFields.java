@@ -15,7 +15,7 @@ import java.util.List;
  * Created by brandon3055 on 23/01/2017.
  */
 public class GuiFields {
-    //The oreder of the entries in this list will be the order they show.
+    //The order of the entries in this list will be the order they show.
     //I can apply a comparator to the list before display to sort it.
     public static List<Module> modules = new LinkedList<>();
     public static Module forgeModule;
@@ -25,10 +25,6 @@ public class GuiFields {
         forgeModule.NAME = "Forge";
         forgeModule.CONTENT_ROOT = new File("Forge");
         forgeModule.sourceFolders.addAll(findModuleSrc(forgeModule));
-        //forgeModule.orderEntries.add(new ModuleEntry("testDep1", true, Scope.COMPILE));
-        //forgeModule.orderEntries.add(new ModuleEntry("testDep2", false, Scope.RUNTIME));
-        //forgeModule.orderEntries.add(new ModuleEntry("testDep3", true, Scope.TEST));
-        //forgeModule.orderEntries.add(new ModuleEntry("testDep4", true, Scope.PROVIDED));
         modules.add(forgeModule);
     }
 
