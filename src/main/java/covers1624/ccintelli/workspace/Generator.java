@@ -23,7 +23,6 @@ public class Generator {
     public static Map<String, List<String>> moduleAtLines;
 
     public static void goGoGadgetMakeTheIdeaThings() {
-        LogHelper.info("FJASDJKHASd");
         Utils.tryCreateDirectory(Launch.WORKSPACE);
         Utils.tryCreateDirectory(Launch.MODULES);
         Utils.tryCreateDirectory(Launch.PROJECT_RUN);
@@ -38,7 +37,7 @@ public class Generator {
 
 
         exportModules();
-
+        WorkspaceGenerator.generateWorkspace();
     }
 
     public static void runForgeSetup() {
