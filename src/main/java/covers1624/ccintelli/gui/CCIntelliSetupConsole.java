@@ -8,12 +8,14 @@ package covers1624.ccintelli.gui;
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
+import java.lang.Thread;
 /**
  * @author brandon3055
  */
 public class CCIntelliSetupConsole extends javax.swing.JFrame {
-
+    Thread writingThread;
+    boolean running = false;
+    String printed = null;
     public CCIntelliSetupConsole() {
         initComponents();
         addWindowListener(new WindowAdapter() {
@@ -23,10 +25,20 @@ public class CCIntelliSetupConsole extends javax.swing.JFrame {
             }
         });
         closeButton.addActionListener(e -> tryClose());
+        writingThread = new Thread(() -> {
+            while(running){
+                if(printed != null){
+                    consoleTextPane.setText(printed);
+                    printed = null;
+                }
+            }
+        });
+        running = true;
     }
 
     private void tryClose() {
         if (JOptionPane.showConfirmDialog(this, "This will only close the console not the main program.", "Close?", JOptionPane.OK_CANCEL_OPTION) == 0) {
+            running = false;
             dispose();
         }
     }
@@ -40,7 +52,8 @@ public class CCIntelliSetupConsole extends javax.swing.JFrame {
     }
 
     private void print(final String appendText) {
-        SwingUtilities.invokeLater(() -> consoleTextPane.setText(consoleTextPane.getText() + appendText));
+//         SwingUtilities.invokeLater(() -> consoleTextPane.setText(consoleTextPane.getText() + appendText));
+        printed = consoleTextPane.setText(consoleTextPane.getText() + appendText);
     }
 
     public void println(String newLine) {
