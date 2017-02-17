@@ -3,6 +3,7 @@ package covers1624.ccintelli.launch;
 import covers1624.ccintelli.gui.CCIntelliSetupConsole;
 import covers1624.ccintelli.gui.CCIntelliSetupMainWindow;
 import covers1624.ccintelli.gui.GuiFields;
+import covers1624.ccintelli.gui.SetupDialog;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.util.Utils;
 import covers1624.ccintelli.util.LogHelper;
@@ -12,6 +13,8 @@ import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by covers1624 on 19/01/2017.
@@ -36,6 +39,22 @@ public class Launch {
 
 	public static void main(String[] args) throws Exception {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+		List<File> recents = new ArrayList<>();
+
+		recents.add(new File("C:\\RecentDir1"));
+		recents.add(new File("C:\\RecentDir2"));
+		recents.add(new File("C:\\RecentDir3"));
+		recents.add(new File("C:\\RecentDir4"));
+
+		SetupDialog setup = new SetupDialog();
+		File workspaceDir = setup.getDirectory();
+
+		if (workspaceDir == null) {
+			LogHelper.info("No workspace selected. Canceling launch!");
+			return;
+		}
+
 		BUILD_DIR = new File(".", "build");
 		LIB_DIR = new File(BUILD_DIR, "libs");
 		WORKSPACE = new File("Workspace");
