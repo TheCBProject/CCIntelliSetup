@@ -9,7 +9,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 
 group = "covers1624.ccintelli"
-archivesBaseName = "covers1624.CCIntelliSetup"
+archivesBaseName = "CCIntelliSetup"
 
 // Define properties file
 ext.configFile = file "build.properties"
@@ -40,7 +40,7 @@ repositories {
 dependencies {
     compile 'com.google.guava:guava:17.0'
     compile 'org.apache.commons:commons-io:1.3.2'
-    compile 'org.apache.logging.log4j:log4j-core:2.8'
+    compile 'org.apache.logging.log4j:log4j-core:2.5'
     compile 'com.google.code.gson:gson:2.6.2'
 
 }

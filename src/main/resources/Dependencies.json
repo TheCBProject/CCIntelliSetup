@@ -13,12 +13,12 @@
 			"md5": "6C9CE8534B9E4C17E5DEA7A97425245C"
 		},
 		{
-			"url": "http://jcenter.bintray.com/org/apache/logging/log4j/log4j-core/2.8/log4j-core-2.8.jar",
-			"md5": "C6D233BC8E9CFE5DA690059D27D9F88F"
+			"url" : "http://jcenter.bintray.com/org/apache/logging/log4j/log4j-core/2.5/log4j-core-2.5.jar",
+			"md5" : "DD0E3E0B404083EC69618AABB50B8AC0"
 		},
 		{
-			"url": "http://jcenter.bintray.com/org/apache/logging/log4j/log4j-api/2.8/log4j-api-2.8.jar",
-			"md5": "311A37DBDE84E7C1EE4CF0AB1DCD2670"
+			"url" : "http://jcenter.bintray.com/org/apache/logging/log4j/log4j-api/2.5/log4j-api-2.5.jar",
+			"md5" : "B006C549EE3D523388AA4DF022324830"
 		}
 	]
 }
