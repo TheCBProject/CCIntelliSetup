@@ -19,6 +19,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -90,6 +91,10 @@ public class WorkspaceGenerator {
                 compilerComponent.appendChild(defaultCompiler);
                 defaultCompiler.setAttribute("value", Launch.COMPILER_SELECT);
                 defaultCompiler.setAttribute("name", "DEFAULT_COMPILER");
+
+                Element notNullAssertions = document.createElement("addNotNullAssertions");
+                compilerComponent.appendChild(notNullAssertions);
+                notNullAssertions.setAttribute("enabled", String.valueOf(Launch.NOT_NULL_ASSERTIONS).toLowerCase(Locale.US));
 
                 Element resourceExtensions = document.createElement("resourceExtensions");
                 compilerComponent.appendChild(resourceExtensions);
