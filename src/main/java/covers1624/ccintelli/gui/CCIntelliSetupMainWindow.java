@@ -1278,8 +1278,6 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     public void moduleSelected(Module module) {
         selectedModule = module;
         selectedModuleDirectoryField.setText("");
-        moduleLanguageLevel.setSelectedItem(module.langLevel.getGuiName());
-        moduleBytecodeLevel.setSelectedItem(module.bytecodeLevel.getGuiName());
         srcListModel.clear();
         selectedModuleEntries.clear();
         while (depTablelModel.getRowCount() > 0) {
@@ -1289,6 +1287,9 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         if (module == null) {
             return;
         }
+
+        moduleLanguageLevel.setSelectedItem(module.langLevel.getGuiName());
+        moduleBytecodeLevel.setSelectedItem(module.bytecodeLevel.getGuiName());
 
         selectedModuleDirectoryField.setText(module.CONTENT_ROOT.getAbsolutePath());
         for (String src : module.sourceFolders) {
