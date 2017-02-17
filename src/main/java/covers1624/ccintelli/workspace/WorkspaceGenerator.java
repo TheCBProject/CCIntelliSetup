@@ -88,7 +88,8 @@ public class WorkspaceGenerator {
 
                 Element defaultCompiler = document.createElement("option");
                 compilerComponent.appendChild(defaultCompiler);
-                defaultCompiler.setAttribute("DEFAULT_COMPILER", Launch.COMPILER_SELECT);
+                defaultCompiler.setAttribute("value", Launch.COMPILER_SELECT);
+                defaultCompiler.setAttribute("name", "DEFAULT_COMPILER");
 
                 Element resourceExtensions = document.createElement("resourceExtensions");
                 compilerComponent.appendChild(resourceExtensions);
