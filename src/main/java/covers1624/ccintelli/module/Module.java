@@ -2,6 +2,7 @@ package covers1624.ccintelli.module;
 
 import covers1624.ccintelli.module.OrderEntry.Scope;
 import covers1624.ccintelli.module.OrderEntry.Type;
+import covers1624.ccintelli.util.EnumLanguageLevel;
 import covers1624.ccintelli.util.Utils;
 import covers1624.ccintelli.util.LogHelper;
 import org.w3c.dom.Document;
@@ -30,6 +31,8 @@ public class Module {
 	public File CONTENT_ROOT;
 	public List<String> sourceFolders = new LinkedList<>();
 	public List<OrderEntry> orderEntries = new LinkedList<>();
+	public EnumLanguageLevel langLevel = EnumLanguageLevel.JDK_1_8;
+	public EnumLanguageLevel bytecodeLevel = EnumLanguageLevel.JDK_1_8;
 
 	public void writeXML(File file) {
 		try {

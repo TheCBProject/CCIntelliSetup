@@ -9,6 +9,7 @@ import covers1624.ccintelli.launch.Launch;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.module.ModuleEntry;
 import covers1624.ccintelli.module.OrderEntry;
+import covers1624.ccintelli.util.EnumLanguageLevel;
 import covers1624.ccintelli.util.LogHelper;
 import covers1624.ccintelli.workspace.Generator;
 
@@ -45,6 +46,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private static final String MOVE_TO_SUB = "Move to module group";
     private static final String MOVE_TO_NEW_SUB = "Move to new module group";
     private static final String REMOVE_FROM_SUB = "Remove from module group";
+    private boolean initialized = false;
 
     /**
      * Creates new form CCIntelliSetupMainWindow
@@ -62,12 +64,24 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
         selectedModuleSourceList.setModel(srcListModel);
 
+        for (EnumLanguageLevel level : EnumLanguageLevel.values()) {
+            projectLangLevel.addItem(level.getGuiName());
+            projectBytecodeLevel.addItem(level.getGuiName());
+            moduleLanguageLevel.addItem(level.getGuiName());
+            moduleBytecodeLevel.addItem(level.getGuiName());
+        }
+
+        projectLangLevel.setSelectedItem(GuiFields.projectLangLevel.getGuiName());
+        projectBytecodeLevel.setSelectedItem(GuiFields.projectBytecodeLevel.getGuiName());
+
         setupModuleTree();
         setupDepTable();
         reloadModuleTree();
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+
+        initialized = true;
     }
 
     /**
@@ -102,6 +116,10 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         jLabel1 = new JLabel();
         addNonNullAssertionsCheckbox = new JCheckBox();
         jButton1 = new JButton();
+        jLabel10 = new JLabel();
+        projectLangLevel = new JComboBox<>();
+        jLabel11 = new JLabel();
+        projectBytecodeLevel = new JComboBox<>();
         modulePanel = new JPanel();
         leftModulePanel = new JPanel();
         jScrollPane1 = new JScrollPane();
@@ -123,6 +141,10 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         removeModuleDep = new JButton();
         jScrollPane4 = new JScrollPane();
         depTable = new JTable();
+        jLabel12 = new JLabel();
+        moduleLanguageLevel = new JComboBox<>();
+        jLabel13 = new JLabel();
+        moduleBytecodeLevel = new JComboBox<>();
         jMenuBar1 = new JMenuBar();
         fileMenu = new JMenu();
         importButton = new JMenuItem();
@@ -226,7 +248,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                                                 .addComponent(jLabel4)
                                                 .addComponent(jLabel5)
                                                 .addComponent(jLabel6))
-                                        .addGap(0, 264, Short.MAX_VALUE)))
+                                        .addGap(0, 452, Short.MAX_VALUE)))
                         .addContainerGap())
         );
         leftSetupPanelLayout.setVerticalGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -255,7 +277,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                         .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(compilerOutDirField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(compilerOutDirSelect))
-                        .addContainerGap(167, Short.MAX_VALUE))
+                        .addContainerGap(169, Short.MAX_VALUE))
         );
 
         rightSetupPanel.setBorder(BorderFactory.createEtchedBorder());
@@ -284,6 +306,22 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
             }
         });
 
+        jLabel10.setText("Project Language Level:");
+
+        projectLangLevel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                selectProjectLangLevel(evt);
+            }
+        });
+
+        jLabel11.setText("Project Bytecode Level:");
+
+        projectBytecodeLevel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                selectProjectBytecodeLevel(evt);
+            }
+        });
+
         GroupLayout rightSetupPanelLayout = new GroupLayout(rightSetupPanel);
         rightSetupPanel.setLayout(rightSetupPanelLayout);
         rightSetupPanelLayout.setHorizontalGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -291,18 +329,29 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addGroup(rightSetupPanelLayout.createSequentialGroup()
-                                        .addComponent(jLabel2)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(compilerSelector, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                .addGroup(rightSetupPanelLayout.createSequentialGroup()
+                                                        .addComponent(jLabel2)
+                                                        .addGap(62, 62, 62)
+                                                        .addComponent(compilerSelector, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(rightSetupPanelLayout.createSequentialGroup()
+                                                        .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                                .addComponent(jLabel10)
+                                                                .addComponent(jLabel11))
+                                                        .addGap(18, 18, 18)
+                                                        .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                                .addComponent(projectBytecodeLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(projectLangLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
+                                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(GroupLayout.Alignment.TRAILING, rightSetupPanelLayout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 189, GroupLayout.PREFERRED_SIZE)
+                                        .addGap(6, 6, 6))
                                 .addGroup(rightSetupPanelLayout.createSequentialGroup()
                                         .addComponent(jLabel1)
                                         .addGap(18, 18, 18)
-                                        .addComponent(addNonNullAssertionsCheckbox)))
-                        .addContainerGap(239, Short.MAX_VALUE))
-                .addGroup(GroupLayout.Alignment.TRAILING, rightSetupPanelLayout.createSequentialGroup()
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 189, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
+                                        .addComponent(addNonNullAssertionsCheckbox)
+                                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         rightSetupPanelLayout.setVerticalGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(rightSetupPanelLayout.createSequentialGroup()
@@ -310,8 +359,16 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                         .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel2)
                                 .addComponent(compilerSelector, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel10)
+                                .addComponent(projectLangLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel11)
+                                .addComponent(projectBytecodeLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel1)
                                 .addComponent(addNonNullAssertionsCheckbox))
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -396,7 +453,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         leftModulePanelLayout.setVerticalGroup(leftModulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(leftModulePanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(addModuleField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -493,17 +550,28 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
             depTable.getColumnModel().getColumn(2).setMaxWidth(80);
         }
 
+        jLabel12.setText("Language Level:");
+
+        moduleLanguageLevel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                setModuleLanguage(evt);
+            }
+        });
+
+        jLabel13.setText("Bytecode Level:");
+
+        moduleBytecodeLevel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                setModuleBytecode(evt);
+            }
+        });
+
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(addModuleDep)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(removeModuleDep)
-                                        .addGap(0, 0, Short.MAX_VALUE))
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                 .addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
@@ -522,7 +590,22 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                                         .addGap(0, 0, Short.MAX_VALUE)
                                                         .addComponent(editModuleSrc, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)))
-                                        .addContainerGap())))
+                                        .addContainerGap())
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                                        .addComponent(jLabel12)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(moduleLanguageLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(18, 18, 18)
+                                                        .addComponent(jLabel13)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(moduleBytecodeLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                                        .addComponent(addModuleDep)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(removeModuleDep)))
+                                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -546,7 +629,14 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(addModuleDep)
-                                .addComponent(removeModuleDep)))
+                                .addComponent(removeModuleDep))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel12)
+                                .addComponent(moduleLanguageLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel13)
+                                .addComponent(moduleBytecodeLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())
         );
 
         GroupLayout modulePanelLayout = new GroupLayout(modulePanel);
@@ -685,6 +775,20 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         Launch.COMPILER_SELECT = compilerSelector.getSelectedItem().toString();
     }
 
+    private void selectProjectLangLevel(ActionEvent evt) {
+        if (!initialized) {
+            return;
+        }
+        GuiFields.projectLangLevel = findLevel(projectLangLevel.getSelectedItem().toString());
+    }
+
+    private void selectProjectBytecodeLevel(ActionEvent evt) {
+        if (!initialized) {
+            return;
+        }
+        GuiFields.projectBytecodeLevel = findLevel(projectBytecodeLevel.getSelectedItem().toString());
+    }
+
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Module Tree">
@@ -753,6 +857,8 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         module.NAME = addModuleField.getText();
         module.CONTENT_ROOT = new File(module.NAME);
         module.sourceFolders = GuiFields.findModuleSrc(module);
+        module.langLevel = GuiFields.projectLangLevel;
+        module.bytecodeLevel = GuiFields.projectBytecodeLevel;
         GuiFields.onModuleAdded(module);
         reloadModuleTree();
         addModuleField.setText("");
@@ -912,6 +1018,30 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         depTable.updateUI();
         selectedModule.orderEntries.remove(selectedModuleEntries.get(row));
         moduleSelected(selectedModule);
+    }
+
+    private void setModuleLanguage(ActionEvent evt) {
+        if (!initialized) {
+            return;
+        }
+        if (selectedModule == null || !GuiFields.modules.contains(selectedModule)) {
+            JOptionPane.showMessageDialog(this, "Please select a module!", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        selectedModule.langLevel = findLevel(moduleLanguageLevel.getSelectedItem().toString());
+    }
+
+    private void setModuleBytecode(ActionEvent evt) {
+        if (!initialized) {
+            return;
+        }
+        if (selectedModule == null || !GuiFields.modules.contains(selectedModule)) {
+            JOptionPane.showMessageDialog(this, "Please select a module!", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        selectedModule.bytecodeLevel = findLevel(moduleBytecodeLevel.getSelectedItem().toString());
     }
 
     // </editor-fold>
@@ -1148,6 +1278,8 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     public void moduleSelected(Module module) {
         selectedModule = module;
         selectedModuleDirectoryField.setText("");
+        moduleLanguageLevel.setSelectedItem(module.langLevel.getGuiName());
+        moduleBytecodeLevel.setSelectedItem(module.bytecodeLevel.getGuiName());
         srcListModel.clear();
         selectedModuleEntries.clear();
         while (depTablelModel.getRowCount() > 0) {
@@ -1210,6 +1342,15 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         }
     }
 
+    private EnumLanguageLevel findLevel(String guiName) {
+        for (EnumLanguageLevel level : EnumLanguageLevel.values()) {
+            if (level.getGuiName().equals(guiName)) {
+                return level;
+            }
+        }
+        return EnumLanguageLevel.JDK_1_6;
+    }
+
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Variables">
@@ -1232,6 +1373,10 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JMenuItem importButton;
     private JButton jButton1;
     private JLabel jLabel1;
+    private JLabel jLabel10;
+    private JLabel jLabel11;
+    private JLabel jLabel12;
+    private JLabel jLabel13;
     private JLabel jLabel2;
     private JLabel jLabel3;
     private JLabel jLabel4;
@@ -1249,10 +1394,14 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JPanel leftSetupPanel;
     private JPanel mainPanel;
     private JTabbedPane mainTabbedPane;
+    private JComboBox<String> moduleBytecodeLevel;
     private JTextField moduleDirField;
     private JButton moduleDirSelect;
+    private JComboBox<String> moduleLanguageLevel;
     private JPanel modulePanel;
     private JTree moduleTree;
+    private JComboBox<String> projectBytecodeLevel;
+    private JComboBox<String> projectLangLevel;
     private JButton removeModuleButton;
     private JButton removeModuleDep;
     private JButton removeModuleSrc;

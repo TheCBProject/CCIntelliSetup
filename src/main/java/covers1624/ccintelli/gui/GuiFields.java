@@ -2,8 +2,8 @@ package covers1624.ccintelli.gui;
 
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.module.ModuleEntry;
-import covers1624.ccintelli.module.OrderEntry;
 import covers1624.ccintelli.module.OrderEntry.Scope;
+import covers1624.ccintelli.util.EnumLanguageLevel;
 import covers1624.ccintelli.util.LogHelper;
 
 import java.io.File;
@@ -20,11 +20,15 @@ public class GuiFields {
     public static List<Module> modules = new LinkedList<>();
     public static Module forgeModule;
 
+    public static EnumLanguageLevel projectLangLevel = EnumLanguageLevel.JDK_1_8;
+    public static EnumLanguageLevel projectBytecodeLevel = EnumLanguageLevel.JDK_1_8;
+
     static {
         forgeModule = new Module();
         forgeModule.NAME = "Forge";
         forgeModule.CONTENT_ROOT = new File("Forge");
         forgeModule.sourceFolders.addAll(findModuleSrc(forgeModule));
+        forgeModule.langLevel = forgeModule.bytecodeLevel = EnumLanguageLevel.JDK_1_6;
         modules.add(forgeModule);
     }
 
