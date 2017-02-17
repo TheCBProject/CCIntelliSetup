@@ -4,64 +4,64 @@ import com.google.common.collect.ImmutableList;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 
+/**
+ * Created by brandon3055 on 17/02/2017.
+ */
 public class SetupDialog extends JDialog {
-    private JPanel contentPane;
+    private JPanel jPanel1;
     private JButton buttonOK;
     private JButton buttonCancel;
     private JTextField directoryField;
-    private JButton choosButton;
+    private JButton chooseButton;
     private JComboBox recentBox;
 
     public SetupDialog() {
         this(ImmutableList.of());
-        choosButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onSelect();
-            }
-        });
     }
 
     public SetupDialog(java.util.List<File> recents) {
-        setContentPane(contentPane);
+        initComponents();
         setModal(true);
-        getRootPane().setDefaultButton(buttonOK);
-
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
-
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
-
-        // call onCancel() when cross is clicked
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                onCancel();
-            }
-        });
-
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-
+//        setContentPane(jPanel1);
+//        setModal(true);
+//        getRootPane().setDefaultButton(buttonOK);
+//
+//        buttonOK.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                onOK();
+//            }
+//        });
+//
+//        buttonCancel.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                onCancel();
+//            }
+//        });
+//
+//        // call onCancel() when cross is clicked
+//        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+//        addWindowListener(new WindowAdapter() {
+//            public void windowClosing(WindowEvent e) {
+//                onCancel();
+//            }
+//        });
+//
+//        // call onCancel() on ESCAPE
+//        jPanel1.registerKeyboardAction(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                onCancel();
+//            }
+//        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+//
         recentBox.addItemListener(e -> directoryField.setText(e.getItem().toString()));
-
+//
         setTitle("Select Workspace Directory");
         pack();
-
+//
         for (File file : recents) {
             recentBox.addItem(file.getAbsoluteFile());
         }
@@ -77,6 +77,102 @@ public class SetupDialog extends JDialog {
             directoryField.setText(recents.get(0).getAbsolutePath());
         }
     }
+
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">
+    private void initComponents() {
+
+        jPanel1 = new JPanel();
+        JLabel jLabel1 = new JLabel();
+        directoryField = new JTextField();
+        chooseButton = new JButton();
+        JLabel jLabel2 = new JLabel();
+        recentBox = new JComboBox<>();
+        buttonCancel = new JButton();
+        buttonOK = new JButton();
+
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        jLabel1.setText("Select Workspace Directory");
+
+        chooseButton.setText("...");
+        chooseButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                onSelect();
+            }
+        });
+
+        jLabel2.setText("Recent:");
+
+        buttonCancel.setText("Cancel");
+        buttonCancel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                onCancel();
+            }
+        });
+
+        buttonOK.setText("OK");
+        buttonOK.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                onOK();
+            }
+        });
+
+        GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(directoryField)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(chooseButton))
+                                .addComponent(jLabel1, GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(recentBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(buttonOK, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(buttonCancel)))
+                        .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(directoryField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(chooseButton))
+                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel2)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(recentBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addContainerGap(63, Short.MAX_VALUE))
+                                .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                .addComponent(buttonCancel)
+                                                .addComponent(buttonOK))
+                                        .addContainerGap())))
+        );
+
+        GroupLayout layout = new GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+    }// </editor-fold>
 
     public File getDirectory() {
         setVisible(true);

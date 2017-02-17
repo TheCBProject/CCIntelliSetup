@@ -1,12 +1,9 @@
 package covers1624.ccintelli.launch;
 
-import covers1624.ccintelli.gui.CCIntelliSetupConsole;
-import covers1624.ccintelli.gui.CCIntelliSetupMainWindow;
-import covers1624.ccintelli.gui.GuiFields;
-import covers1624.ccintelli.gui.SetupDialog;
+import covers1624.ccintelli.gui.*;
 import covers1624.ccintelli.module.Module;
-import covers1624.ccintelli.util.Utils;
 import covers1624.ccintelli.util.LogHelper;
+import covers1624.ccintelli.util.Utils;
 import covers1624.launchwrapper.LaunchHandler;
 
 import javax.swing.*;
@@ -47,7 +44,7 @@ public class Launch {
 		recents.add(new File("C:\\RecentDir3"));
 		recents.add(new File("C:\\RecentDir4"));
 
-		SetupDialog setup = new SetupDialog();
+		SetupDialog setup = new SetupDialog(recents);
 		File workspaceDir = setup.getDirectory();
 
 		if (workspaceDir == null) {
