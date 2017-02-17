@@ -17,10 +17,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -111,7 +108,13 @@ public class WorkspaceGenerator {
 
                 Element bytecodeLevel = document.createElement("bytecodeTargetLevel");
                 compilerComponent.appendChild(bytecodeLevel);
-                bytecodeLevel.setAttribute("target", "1.6");//TODO When issues are fixed with java 8 add Gui option for this. Probs just 1.6 -> 1.8.
+                bytecodeLevel.setAttribute("target", GuiFields.projectBytecodeLevel.getBytecodeTarget());
+
+                List<Map<String, String>> moduleByteCodeLevels = new LinkedList<>();
+                for (Module module : GuiFields.modules) {
+                    moduleByteCodeLevels.add(ImmutableMap.of("name", module.NAME, "target", module.bytecodeLevel.getBytecodeTarget()));
+                }
+                appendBatchedAttributes(document, bytecodeLevel, "module", moduleByteCodeLevels);
             }
 
             {// Copyright
@@ -196,7 +199,7 @@ public class WorkspaceGenerator {
                 projectElement.appendChild(projectRootComponent);
                 projectRootComponent.setAttribute("name", "ProjectRootManager");
                 projectRootComponent.setAttribute("version", "2");
-                projectRootComponent.setAttribute("languageLevel", "JDK_1_6");//TODO See other TODO above.
+                projectRootComponent.setAttribute("languageLevel", GuiFields.projectLangLevel.getXMLName());//TODO See other TODO above.
                 projectRootComponent.setAttribute("assert-keyword", "true");
                 projectRootComponent.setAttribute("jdk-15", "true");
                 projectRootComponent.setAttribute("project-jdk-type", "JavaSDK");

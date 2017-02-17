@@ -46,7 +46,7 @@ public class Module {
 
 			Element moduleElement = document.createElement("module");
 			document.appendChild(moduleElement);
-			moduleElement.setAttribute("relativePaths", "false");//TODO
+			moduleElement.setAttribute("relativePaths", "false");
 			moduleElement.setAttribute("type", "JAVA_MODULE");
 			moduleElement.setAttribute("version", "4");
 
@@ -54,6 +54,7 @@ public class Module {
 			moduleElement.appendChild(componentElement);
 			componentElement.setAttribute("name", "NewModuleRootManager");
 			componentElement.setAttribute("inherit-compiler-output", "true");
+			componentElement.setAttribute("LANGUAGE_LEVEL", langLevel.getXMLName());
 
 			componentElement.appendChild(document.createElement("exclude-output"));
 
