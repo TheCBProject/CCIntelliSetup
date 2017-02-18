@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableList;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 /**
@@ -24,6 +22,7 @@ public class SetupDialog extends JDialog {
     }
 
     public SetupDialog(java.util.List<File> recents) {
+        setIconImage(Toolkit.getDefaultToolkit().createImage(SetupDialog.class.getResource("/CCIS_Icon.png")));
         initComponents();
         setModal(true);
         recentBox.addItemListener(e -> directoryField.setText(e.getItem().toString()));

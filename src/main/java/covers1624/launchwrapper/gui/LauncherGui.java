@@ -4,8 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.net.URL;
 
 /**
@@ -35,6 +33,7 @@ public class LauncherGui extends JOptionPane implements ILauncherDisplay {
             }
         });
         dialog = new JDialog(null, "Hello", Dialog.ModalityType.MODELESS);
+        dialog.setIconImage(Toolkit.getDefaultToolkit().createImage(LauncherGui.class.getResource("/CCIS_Icon.png")));
         dialog.setResizable(false);
         dialog.setLocationRelativeTo(null);
         dialog.add(this);
