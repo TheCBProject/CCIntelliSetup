@@ -7,7 +7,7 @@ import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.util.ATFileFilter;
 import covers1624.ccintelli.util.ResourceWalker;
 import covers1624.ccintelli.util.Utils;
-import covers1624.ccintelli.util.LogHelper;
+import covers1624.ccintelli.util.logging.LogHelper;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;

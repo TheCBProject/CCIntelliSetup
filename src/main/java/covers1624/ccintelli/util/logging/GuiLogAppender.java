@@ -1,4 +1,4 @@
-package covers1624.ccintelli.util;
+package covers1624.ccintelli.util.logging;
 
 import covers1624.ccintelli.launch.Launch;
 import org.apache.logging.log4j.core.Filter;

@@ -10,7 +10,7 @@ import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.module.ModuleEntry;
 import covers1624.ccintelli.module.OrderEntry;
 import covers1624.ccintelli.util.EnumLanguageLevel;
-import covers1624.ccintelli.util.LogHelper;
+import covers1624.ccintelli.util.logging.LogHelper;
 import covers1624.ccintelli.workspace.WorkspaceGenerator;
 
 import javax.swing.*;

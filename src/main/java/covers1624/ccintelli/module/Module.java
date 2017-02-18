@@ -4,7 +4,7 @@ import covers1624.ccintelli.module.OrderEntry.Scope;
 import covers1624.ccintelli.module.OrderEntry.Type;
 import covers1624.ccintelli.util.EnumLanguageLevel;
 import covers1624.ccintelli.util.Utils;
-import covers1624.ccintelli.util.LogHelper;
+import covers1624.ccintelli.util.logging.LogHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

@@ -2,7 +2,7 @@ package covers1624.ccintelli.launch;
 
 import covers1624.ccintelli.gui.*;
 import covers1624.ccintelli.module.Module;
-import covers1624.ccintelli.util.LogHelper;
+import covers1624.ccintelli.util.logging.LogHelper;
 import covers1624.ccintelli.util.Utils;
 import covers1624.launchwrapper.LaunchHandler;
 
@@ -21,7 +21,7 @@ public class Launch {
 
     private static boolean SHOULD_EXIT = false;
 
-    public static File BUILD_DIR;
+    public static File WORKING_DIR;
 	public static File LIB_DIR;
 
 	public static File WORKSPACE;
@@ -40,16 +40,9 @@ public class Launch {
 	private static final List<Runnable> RUNNABLES = new LinkedList<>();
 
 	public static void main(String[] args) throws Exception {
+        WORKING_DIR = Utils.getWorkingDirectory("ccintelli");
 
-		BUILD_DIR = new File(".", "build");
-		LIB_DIR = new File(BUILD_DIR, "libs");
-		WORKSPACE = new File("Workspace");
-		PROJECT_RUN = new File(WORKSPACE, "run");
-		PROJECT_OUTPUT = new File(WORKSPACE, "out");
-		MODULES = new File(WORKSPACE, "Modules");
-		FORGE = new File("Forge");
-
-		Utils.tryCreateDirectory(BUILD_DIR);
+		LIB_DIR = new File(WORKING_DIR, "libs");
 		Utils.tryCreateDirectory(LIB_DIR);
 
 		LaunchHandler.runPreLaunch("CCIntelliSetup", Launch.class.getResourceAsStream("/Dependencies.json"), LIB_DIR, null, null);
@@ -69,6 +62,12 @@ public class Launch {
             LogHelper.info("No workspace selected. Canceling launch!");
             return;
         }
+
+        WORKSPACE = new File("Workspace");
+        PROJECT_RUN = new File(WORKSPACE, "run");
+        PROJECT_OUTPUT = new File(WORKSPACE, "out");
+        MODULES = new File(WORKSPACE, "Modules");
+        FORGE = new File("Forge");
 
         console = new CCIntelliSetupConsole();
         console.setVisible(true);

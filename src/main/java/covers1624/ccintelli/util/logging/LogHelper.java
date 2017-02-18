@@ -1,4 +1,4 @@
-package covers1624.ccintelli.util;
+package covers1624.ccintelli.util.logging;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

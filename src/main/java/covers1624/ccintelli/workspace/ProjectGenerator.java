@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableMap;
 import covers1624.ccintelli.gui.GuiFields;
 import covers1624.ccintelli.launch.Launch;
 import covers1624.ccintelli.module.Module;
-import covers1624.ccintelli.util.LogHelper;
+import covers1624.ccintelli.util.logging.LogHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
