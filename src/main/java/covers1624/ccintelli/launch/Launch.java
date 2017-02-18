@@ -48,22 +48,18 @@ public class Launch {
 		LaunchHandler.runPreLaunch("CCIntelliSetup", Launch.class.getResourceAsStream("/Dependencies.json"), LIB_DIR, null, null);
         UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");
 
-        List<File> recents = new ArrayList<>();
-
-        //recents.add(new File("C:\\RecentDir1"));
-        //recents.add(new File("C:\\RecentDir2"));
-        //recents.add(new File("C:\\RecentDir3"));
-        //recents.add(new File("C:\\RecentDir4"));
-
+        RecentWorkspaceSerializer workspaceSerializer = new RecentWorkspaceSerializer(new File(WORKING_DIR, "recents.json"));
+        List<File> recents = new LinkedList<>(workspaceSerializer.load());
         SetupDialog setup = new SetupDialog(recents);
-        File workspaceDir = setup.getDirectory();
+        WORKSPACE = setup.getDirectory();
 
-        if (workspaceDir == null) {
+        if (WORKSPACE == null) {
             LogHelper.info("No workspace selected. Canceling launch!");
             return;
         }
+        recents.add(0, WORKSPACE);//Inject last to top of the list.
+        workspaceSerializer.save(recents);
 
-        WORKSPACE = new File("Workspace");
         PROJECT_RUN = new File(WORKSPACE, "run");
         PROJECT_OUTPUT = new File(WORKSPACE, "out");
         MODULES = new File(WORKSPACE, "Modules");

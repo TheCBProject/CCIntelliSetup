@@ -150,8 +150,8 @@ public class CCIntelliSetupFileAppender extends AbstractOutputStreamAppender<Rol
             LOGGER.error("A TriggeringPolicy must be provided");
             return null;
         }
-        fileName = Launch.WORKING_DIR.getAbsolutePath() + fileName;
-        filePattern = Launch.WORKING_DIR.getAbsolutePath() + filePattern;
+        fileName = Launch.WORKING_DIR.getAbsolutePath() + "/" + fileName;
+        filePattern = Launch.WORKING_DIR.getAbsolutePath() + "/" + filePattern;
         if (strategy == null) {
             strategy = DefaultRolloverStrategy.createStrategy(null, null, null, String.valueOf(Deflater.DEFAULT_COMPRESSION), null, true, config);
         }
