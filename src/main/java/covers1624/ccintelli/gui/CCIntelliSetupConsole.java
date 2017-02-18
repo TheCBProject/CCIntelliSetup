@@ -6,6 +6,7 @@
 package covers1624.ccintelli.gui;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 /**
@@ -13,6 +14,7 @@ import java.awt.event.WindowEvent;
  */
 public class CCIntelliSetupConsole extends javax.swing.JFrame {
     public CCIntelliSetupConsole() {
+        setIconImage(Toolkit.getDefaultToolkit().createImage(CCIntelliSetupMainWindow.class.getResource("/CCIS_Icon.png")));
         initComponents();
         addWindowListener(new WindowAdapter() {
             @Override

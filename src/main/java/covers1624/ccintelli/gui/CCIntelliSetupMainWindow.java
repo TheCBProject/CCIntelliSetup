@@ -54,10 +54,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     public CCIntelliSetupMainWindow() {
         initComponents();
         setTitle("CCIntelliSetup! \\o/");
-//        LogHelper.info(CCIntelliSetupMainWindow.class.getResource("/CCIS_Icon.ico"));
-//        Image image = Toolkit.getDefaultToolkit().createImage(CCIntelliSetupMainWindow.class.getResource("/CCIS_Icon.ico"));
-//        LogHelper.info(image);
-//        setIconImage(image);
+        setIconImage(Toolkit.getDefaultToolkit().createImage(CCIntelliSetupMainWindow.class.getResource("/CCIS_Icon.png")));
 
         workspaceDirField.setText(Launch.WORKSPACE.getAbsolutePath());
         moduleDirField.setText(Launch.MODULES.getAbsolutePath());
@@ -1107,7 +1104,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     // </editor-fold>
 
     private void generateWorkspaceButton(ActionEvent evt) {
-        Generator.goGoGadgetMakeTheIdeaThings();
+        Launch.scheduleTask(() -> Generator.goGoGadgetMakeTheIdeaThings());
     }
 
     // </editor-fold>
