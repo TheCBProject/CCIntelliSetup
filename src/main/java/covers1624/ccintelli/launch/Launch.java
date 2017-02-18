@@ -70,19 +70,12 @@ public class Launch {
             return;
         }
 
-        LogHelper.info("CCIntelliSetup \\o/");
-		Thread consoleThread = new Thread() {
-			@Override
-			public void run() {
-				console = new CCIntelliSetupConsole();
-				console.setVisible(true);
-				window = new CCIntelliSetupMainWindow();
-				window.setVisible(true);
-			}
-		};
-		consoleThread.setDaemon(true);
-		consoleThread.start();
+        console = new CCIntelliSetupConsole();
+        console.setVisible(true);
+        window = new CCIntelliSetupMainWindow();
+        window.setVisible(true);
 
+        LogHelper.info("CCIntelliSetup \\o/");
 
         while (!shouldExit()) {
             List<Runnable> runnableCopy;

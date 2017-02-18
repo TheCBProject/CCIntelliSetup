@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN" packages ="covers1624.ccintelli.util.logger">
-  <Appenders>
-    <Console name="MainOut" target="SYSTEM_OUT">
-      <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level] [%logger] - %msg%n"/>
-    </Console>
-    <RollingRandomAccessFile name="File" fileName="build/logs/latest.log" filePattern="build/logs/%d{yyyy-MM-dd}-%i.log.gz">
-      <PatternLayout pattern="[%d{HH:mm:ss.SSS}] [%t/%level]: %msg%n"/>
-        <Policies>
-            <TimeBasedTriggeringPolicy/>
-            <OnStartupTriggeringPolicy/>
-        </Policies>
-    </RollingRandomAccessFile>
-  </Appenders>
-  <Loggers>
-    <Root level="all">
-      <AppenderRef ref="MainOut" level="INFO"/>
-      <AppenderRef ref="File"/>
-    </Root>
-  </Loggers>
+<Configuration status="WARN" packages="covers1624.ccintelli.util">
+    <Appenders>
+        <Console name="MainOut" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n"/>
+        </Console>
+        <GuiAppender name="Gui">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n"/>
+        </GuiAppender>
+        <RollingRandomAccessFile name="File" fileName="build/logs/latest.log" filePattern="build/logs/%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="[%d{HH:mm:ss.SSS}] [%t/%level]: %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <Root level="all">
+            <AppenderRef ref="MainOut" level="INFO"/>
+            <AppenderRef ref="Gui" level="INFO"/>
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
 </Configuration>
