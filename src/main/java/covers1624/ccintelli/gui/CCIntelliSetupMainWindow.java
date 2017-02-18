@@ -54,6 +54,10 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     public CCIntelliSetupMainWindow() {
         initComponents();
         setTitle("CCIntelliSetup! \\o/");
+//        LogHelper.info(CCIntelliSetupMainWindow.class.getResource("/CCIS_Icon.ico"));
+//        Image image = Toolkit.getDefaultToolkit().createImage(CCIntelliSetupMainWindow.class.getResource("/CCIS_Icon.ico"));
+//        LogHelper.info(image);
+//        setIconImage(image);
 
         workspaceDirField.setText(Launch.WORKSPACE.getAbsolutePath());
         moduleDirField.setText(Launch.MODULES.getAbsolutePath());
@@ -82,6 +86,15 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
 
         initialized = true;
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                onWindowClosed();
+            }
+        });
+
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     }
 
     /**
@@ -152,7 +165,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         helpMenu = new JMenu();
         aboutMenuItem = new JMenuItem();
 
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         setupLabel.setHorizontalAlignment(SwingConstants.CENTER);
         setupLabel.setText("All the setup stuff.");
@@ -1417,5 +1430,9 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JButton workspaceDirSelect;
     // End of variables declaration                   
     // </editor-fold>
+
+    private void onWindowClosed() {
+        LogHelper.info("Close");
+    }
 }
 //Export file browser. Current directory no file name
