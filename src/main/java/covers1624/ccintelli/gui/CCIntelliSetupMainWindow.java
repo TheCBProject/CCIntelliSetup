@@ -11,7 +11,7 @@ import covers1624.ccintelli.module.ModuleEntry;
 import covers1624.ccintelli.module.OrderEntry;
 import covers1624.ccintelli.util.EnumLanguageLevel;
 import covers1624.ccintelli.util.LogHelper;
-import covers1624.ccintelli.workspace.Generator;
+import covers1624.ccintelli.workspace.WorkspaceGenerator;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -1104,7 +1104,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     // </editor-fold>
 
     private void generateWorkspaceButton(ActionEvent evt) {
-        Launch.scheduleTask(() -> Generator.goGoGadgetMakeTheIdeaThings());
+        Launch.scheduleTask(() -> WorkspaceGenerator.goGoGadgetMakeTheIdeaThings());
     }
 
     // </editor-fold>

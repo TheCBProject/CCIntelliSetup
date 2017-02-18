@@ -40,7 +40,7 @@ public class CCIntelliSetupConsole extends javax.swing.JFrame {
     }
 
     public void println(String newLine) {
-        print("\n" + newLine);
+        print(newLine);
     }
 
     /**

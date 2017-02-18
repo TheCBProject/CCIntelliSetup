@@ -1,234 +1,168 @@
 package covers1624.ccintelli.workspace;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import covers1624.ccintelli.gui.GuiFields;
 import covers1624.ccintelli.launch.Launch;
 import covers1624.ccintelli.module.Module;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import covers1624.ccintelli.util.ATFileFilter;
+import covers1624.ccintelli.util.ResourceWalker;
+import covers1624.ccintelli.util.Utils;
+import covers1624.ccintelli.util.LogHelper;
+import org.apache.commons.io.IOUtils;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.File;
+import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
 
 /**
- * Created by covers1624 on 11/02/2017.
+ * Created by covers1624 on 10/02/2017.
  */
 public class WorkspaceGenerator {
 
-    private static List<Map<String, String>> resourceExtensionAttributes;
-    private static List<Map<String, String>> wildcardResoaurceAttibutes;
-    private static List<Map<String, String>> javadocGenerationAttributes;
+    public static List<String> forgeATLines;
+    public static Map<String, List<String>> moduleAtLines;
 
-    static {
-        List<Map<String, String>> tempMap = new LinkedList<>();
-
-        tempMap.add(ImmutableMap.of("name", ".+\\.(properties|xml|html|dtd|tld)"));
-        tempMap.add(ImmutableMap.of("name", ".+\\.(gif|png|jpeg|jpg)"));
-
-        resourceExtensionAttributes = ImmutableList.copyOf(tempMap);
-        tempMap.clear();
-
-        tempMap.add(ImmutableMap.of("name", "!?*.class"));
-        tempMap.add(ImmutableMap.of("name", "!?*.scala"));
-        tempMap.add(ImmutableMap.of("name", "!?*.groovy"));
-        tempMap.add(ImmutableMap.of("name", "!?*.java"));
-        wildcardResoaurceAttibutes = ImmutableList.copyOf(tempMap);
-        tempMap.clear();
-
-        tempMap.add(ImmutableMap.of("name", "OUTPUT_DIRECTORY"));
-        tempMap.add(ImmutableMap.of("name", "OPTION_SCOPE", "value", "protected"));
-        tempMap.add(ImmutableMap.of("name", "OPTION_HIERARCHY", "value", "true"));
-        tempMap.add(ImmutableMap.of("name", "OPTION_NAVIGATOR", "value", "true"));
-        tempMap.add(ImmutableMap.of("name", "OPTION_INDEX", "value", "true"));
-        tempMap.add(ImmutableMap.of("name", "OPTION_SEPARATE_INDEX", "value", "true"));
-        tempMap.add(ImmutableMap.of("name", "OPTION_DOCUMENT_TAG_USE", "value", "false"));
-        tempMap.add(ImmutableMap.of("name", "OPTION_DOCUMENT_TAG_AUTHOR", "value", "false"));
-        tempMap.add(ImmutableMap.of("name", "OPTION_DOCUMENT_TAG_VERSION", "value", "false"));
-        tempMap.add(ImmutableMap.of("name", "OPTION_DOCUMENT_TAG_DEPRECATED", "value", "false"));
-        tempMap.add(ImmutableMap.of("name", "OPTION_DEPRECATED_LIST", "value", "false"));
-        tempMap.add(ImmutableMap.of("name", "OTHER_OPTIONS", "value", ""));
-        tempMap.add(ImmutableMap.of("name", "HEAP_SIZE"));
-        tempMap.add(ImmutableMap.of("name", "LOCALE"));
-        tempMap.add(ImmutableMap.of("name", "OPEN_IN_BROWSER", "value", "true"));
-        javadocGenerationAttributes = ImmutableList.copyOf(tempMap);
-
+    public static void goGoGadgetMakeTheIdeaThings() {
+        LogHelper.info("Generating Workspace.");
+        Utils.tryCreateDirectory(Launch.WORKSPACE);
+        Utils.tryCreateDirectory(Launch.MODULES);
+        Utils.tryCreateDirectory(Launch.PROJECT_RUN);
+        Utils.tryCreateDirectory(Launch.PROJECT_OUTPUT);
+        mergeATs();
+        runForgeSetup();
+        exportModules();
+        ProjectGenerator.generateWorkspace();
+        LogHelper.info("Done!");
     }
 
-
-    public static void generateWorkspace() {
-        File workspaceIPR = new File(Launch.WORKSPACE, "Workspace.ipr");
+    public static void runForgeSetup() {
+        LogHelper.info("Starting forge setup.");
         try {
-
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.newDocument();
-            document.setXmlVersion("1.0");
-            document.setXmlStandalone(true);
-
-            Element projectElement = document.createElement("project");
-            document.appendChild(projectElement);
-
-            projectElement.setAttribute("version", "4");
-            {// Compiler
-                Element compilerComponent = document.createElement("component");
-                projectElement.appendChild(compilerComponent);
-                compilerComponent.setAttribute("name", "CompilerConfiguration");
-
-                Element defaultCompiler = document.createElement("option");
-                compilerComponent.appendChild(defaultCompiler);
-                defaultCompiler.setAttribute("value", Launch.COMPILER_SELECT);
-                defaultCompiler.setAttribute("name", "DEFAULT_COMPILER");
-
-                Element notNullAssertions = document.createElement("addNotNullAssertions");
-                compilerComponent.appendChild(notNullAssertions);
-                notNullAssertions.setAttribute("enabled", String.valueOf(Launch.NOT_NULL_ASSERTIONS).toLowerCase(Locale.US));
-
-                Element resourceExtensions = document.createElement("resourceExtensions");
-                compilerComponent.appendChild(resourceExtensions);
-                appendBatchedAttributes(document, resourceExtensions, "entry", resourceExtensionAttributes);
-
-                Element wildResourcePatterns = document.createElement("wildcardResourcePatterns");
-                compilerComponent.appendChild(wildResourcePatterns);
-                appendBatchedAttributes(document, wildResourcePatterns, "entry", wildcardResoaurceAttibutes);
-
-                Element annotationProcessing = document.createElement("annotationProcessing");
-                compilerComponent.appendChild(annotationProcessing);
-                annotationProcessing.setAttribute("enabled", "false");
-                annotationProcessing.setAttribute("useClasspath", "true");
-
-                Element bytecodeLevel = document.createElement("bytecodeTargetLevel");
-                compilerComponent.appendChild(bytecodeLevel);
-                bytecodeLevel.setAttribute("target", GuiFields.projectBytecodeLevel.getBytecodeTarget());
-
-                List<Map<String, String>> moduleByteCodeLevels = new LinkedList<>();
-                for (Module module : GuiFields.modules) {
-                    moduleByteCodeLevels.add(ImmutableMap.of("name", module.NAME, "target", module.bytecodeLevel.getBytecodeTarget()));
-                }
-                appendBatchedAttributes(document, bytecodeLevel, "module", moduleByteCodeLevels);
-            }
-
-            {// Copyright
-                Element copyrightComponent = document.createElement("component");
-                projectElement.appendChild(copyrightComponent);
-                copyrightComponent.setAttribute("name", "CopyrightManager");
-                copyrightComponent.setAttribute("default", "");
-                copyrightComponent.appendChild(document.createElement("module2copyright"));
-            }
-
-            {// DependencyValidation
-                Element dependencyCoponent = document.createElement("component");
-                projectElement.appendChild(dependencyCoponent);
-                dependencyCoponent.setAttribute("name", "DependencyValidationManager");
-                Element option1 = document.createElement("option");
-                dependencyCoponent.appendChild(option1);
-                option1.setAttribute("name", "SKIP_IMPORT_STATEMENTS");
-                option1.setAttribute("value", "false");
-            }
-
-            {// Encoding
-                Element encodingComponent = document.createElement("component");
-                projectElement.appendChild(encodingComponent);
-                encodingComponent.setAttribute("name", "Encoding");
-                encodingComponent.setAttribute("useUTFGuessing", "true");
-                encodingComponent.setAttribute("native2AsciiForPropertiesFiles", "false");
-            }
-
-            {// GradleUiSettings
-                Element gradleSettingElement = document.createElement("component");
-                projectElement.appendChild(gradleSettingElement);
-                gradleSettingElement.setAttribute("name", "GradleUISettings");
-                Element setting1 = document.createElement("setting");
-                gradleSettingElement.appendChild(setting1);
-                setting1.setAttribute("name", "root");
-            }
-
-            {// GradleUiSettings2
-                Element gradleSettingElement = document.createElement("component");
-                projectElement.appendChild(gradleSettingElement);
-                gradleSettingElement.setAttribute("name", "GradleUISettings2");
-                Element setting1 = document.createElement("setting");
-                gradleSettingElement.appendChild(setting1);
-                setting1.setAttribute("name", "root");
-            }
-
-            {// IdProvider
-                Element idProviderComponent = document.createElement("component");
-                projectElement.appendChild(idProviderComponent);
-                idProviderComponent.setAttribute("name", "IdProvider");
-                idProviderComponent.setAttribute("IDEtalkID", "11DA1DB66DD62DDA1ED602B7079FE97C");
-            }
-
-            {// JavadocGeneration
-                Element javadocGenerationComponent = document.createElement("component");
-                projectElement.appendChild(javadocGenerationComponent);
-                javadocGenerationComponent.setAttribute("name", "javadocGenerationManager");
-                appendBatchedAttributes(document, javadocGenerationComponent, "option", javadocGenerationAttributes);
-            }
-
-            {// Modules!
-                Element moduleComponent = document.createElement("component");
-                projectElement.appendChild(moduleComponent);
-                moduleComponent.setAttribute("name", "ProjectModuleManager");
-                Element modulesElement = document.createElement("modules");
-                moduleComponent.appendChild(modulesElement);
-
-                for (Module module : GuiFields.modules) {
-                    Element moduleElement = document.createElement("module");
-                    modulesElement.appendChild(moduleElement);
-                    File file = new File(Launch.MODULES, module.NAME + ".iml");
-                    moduleElement.setAttribute("filepath", file.getAbsolutePath());
-                    moduleElement.setAttribute("fileurl", "file://" + file.getAbsolutePath());
-                    if (!Strings.isNullOrEmpty(module.GROUP)) {
-                        moduleElement.setAttribute("group", module.GROUP);
-                    }
-                }
-            }
-
-            { //ProjectRoot
-                Element projectRootComponent = document.createElement("component");
-                projectElement.appendChild(projectRootComponent);
-                projectRootComponent.setAttribute("name", "ProjectRootManager");
-                projectRootComponent.setAttribute("version", "2");
-                projectRootComponent.setAttribute("languageLevel", GuiFields.projectLangLevel.getXMLName());//TODO See other TODO above.
-                projectRootComponent.setAttribute("assert-keyword", "true");
-                projectRootComponent.setAttribute("jdk-15", "true");
-                projectRootComponent.setAttribute("project-jdk-type", "JavaSDK");
-                projectRootComponent.setAttribute("assert-jdk-15", "true");
-                projectRootComponent.setAttribute("project-jdk-name", "1.8");
-
-                Element outputElement = document.createElement("output");
-                projectRootComponent.appendChild(outputElement);
-                outputElement.setAttribute("url", "file://" + Launch.PROJECT_OUTPUT.getAbsolutePath());
-            }
-
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-            DOMSource source = new DOMSource(document);
-            StreamResult result = new StreamResult(workspaceIPR);
-            transformer.transform(source, result);
+            File forge = GuiFields.forgeModule.CONTENT_ROOT;
+            String gradlew = new File(forge, "gradlew.bat").getAbsolutePath();
+            ProcessBuilder builder = new ProcessBuilder();
+            builder.directory(forge.getAbsoluteFile());
+            builder.command(gradlew, "clean", "setupForge");
+            runProcessAndLog(builder.start());
         } catch (Exception e) {
-            throw new RuntimeException("Something went wrong generating the Workspace.ipr", e);
+            throw new RuntimeException("Something went wrong running forges gradle tasks!", e);
         }
     }
 
-    public static void appendBatchedAttributes(Document document, Element parent, String elementName, List<Map<String, String>> valueMap) {
-        for (Map<String, String> values : valueMap) {
-            Element element = document.createElement(elementName);
-            parent.appendChild(element);
-            for (Entry<String, String> entry : values.entrySet()) {
-                element.setAttribute(entry.getKey(), entry.getValue());
+    public static void exportModules() {
+        LogHelper.info("Generating modules..");
+        for (Module module : GuiFields.modules) {
+            if (module.NAME.equals("Forge")) {
+                module = Module.buildForgeModule(new File(module.CONTENT_ROOT, "projects/Forge/Forge.iml"), module);
+            }
+            File moduleXML = new File(Launch.MODULES, module.NAME + ".iml");
+            Utils.tryCreateFile(moduleXML);
+            module.writeXML(moduleXML);
+        }
+    }
+
+    public static void mergeATs() {
+        LogHelper.info("Starting AccessTransformer merge.");
+        forgeATLines = new LinkedList<>();
+        moduleAtLines = new HashMap<>();
+        List<File> forgeAtFiles = findATFilesForModule(GuiFields.forgeModule);
+        for (File atFile : forgeAtFiles) {
+            forgeATLines.addAll(parseATFile(atFile));
+        }
+        for (Module module : GuiFields.modules) {
+            if (module.NAME.equals("Forge")) {
+                continue;
+            }
+            List<String> atLines = new LinkedList<>();
+            for (File file : findATFilesForModule(module)) {
+                atLines.addAll(parseATFile(file));
+            }
+            moduleAtLines.put(module.NAME, atLines);
+        }
+
+        List<String> finalModAtLines = new LinkedList<>();
+        finalModAtLines.add("# Auto generated AT file by CCIntelliSetup, Contains at lines from all modules during setup.");
+        for (Entry<String, List<String>> entry : moduleAtLines.entrySet()) {
+            finalModAtLines.add("");
+            finalModAtLines.add("# AT Lines for: " + entry.getKey());
+            for (String atLine : entry.getValue()) {
+                if (finalModAtLines.contains(atLine)) {
+                    LogHelper.info("Skipping at line from module %s as already exists, %s", entry.getKey(), atLine);
+                    continue;
+                } else if (forgeATLines.contains(atLine)) {
+                    LogHelper.warn("AT Line from module %s already exists in forges at file! \"%s\"", entry.getKey(), atLine);
+                    continue;
+                }
+                finalModAtLines.add(atLine);
+            }
+        }
+        try {
+            File atFile = new File(GuiFields.forgeModule.CONTENT_ROOT, "src/main/resources/merged_at.cfg");
+            Utils.tryCreateFile(atFile);
+            PrintWriter writer = new PrintWriter(atFile);
+            for (String atLine : finalModAtLines) {
+                writer.println(atLine);
+            }
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static List<String> parseATFile(File file) {
+        List<String> lines = new LinkedList<>();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (Strings.isNullOrEmpty(line) || line.startsWith("#")) {
+                    continue;
+                }
+                int tag = line.indexOf("#");
+                if (tag != -1) {
+                    line = line.substring(0, tag).trim();
+                }
+                lines.add(line);
+            }
+            IOUtils.closeQuietly(reader);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lines;
+    }
+
+    public static List<File> findATFilesForModule(Module module) {
+        List<File> files = new LinkedList<>();
+        ResourceWalker walker = new ResourceWalker(new ATFileFilter());
+        for (String srcFolder : module.sourceFolders) {
+            File srcFile = new File(srcFolder);
+            walker.setFolder(srcFile);
+            try {
+                files.addAll(walker.startWalk());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return files;
+    }
+
+    private static void runProcessAndLog(Process process) throws Exception {
+        boolean firstLine = false;
+        Launch.console.setStatus("Waiting for Gradle to start..");
+        while (process.isAlive()) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (!firstLine) {
+                    Launch.console.setStatus("Running Gradle task..");
+                    firstLine = true;
+                }
+                LogHelper.info(line);
             }
         }
     }
