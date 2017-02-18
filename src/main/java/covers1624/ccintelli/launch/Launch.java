@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,7 +19,9 @@ import java.util.List;
  */
 public class Launch {
 
-	public static File BUILD_DIR;
+    private static boolean SHOULD_EXIT = false;
+
+    public static File BUILD_DIR;
 	public static File LIB_DIR;
 
 	public static File WORKSPACE;
@@ -33,6 +36,8 @@ public class Launch {
 
 	public static String COMPILER_SELECT = "Eclipse";
 	public static boolean NOT_NULL_ASSERTIONS = false;
+
+	private static final List<Runnable> RUNNABLES = new LinkedList<>();
 
 	public static void main(String[] args) throws Exception {
 
@@ -78,11 +83,44 @@ public class Launch {
 		consoleThread.setDaemon(true);
 		consoleThread.start();
 
-//		run();
+
+        while (!shouldExit()) {
+            List<Runnable> runnableCopy;
+            synchronized (RUNNABLES) {
+                runnableCopy = new LinkedList<>(RUNNABLES);
+            }
+
+            for (Runnable runnable : runnableCopy) {
+                try {
+                    runnable.run();
+                } catch (Exception e) {
+                    LogHelper.warnError("Exception thrown whilst running a scheduled task.", e);
+                }
+            }
+
+            synchronized (RUNNABLES) {
+                RUNNABLES.removeAll(runnableCopy);
+            }
+        }
 
 
-		//console.dispose();
+        window.dispose();
+		console.dispose();
 	}
+
+	public static synchronized void scheduleTask(Runnable runnable) {
+        synchronized (RUNNABLES) {
+            RUNNABLES.add(runnable);
+        }
+    }
+    
+    public static boolean shouldExit() {
+	    return SHOULD_EXIT;
+    }
+
+    public static void exit() {
+	    SHOULD_EXIT = true;
+    }
 
 	public static void run() throws Exception {
 

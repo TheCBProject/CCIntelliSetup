@@ -90,7 +90,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                onWindowClosed();
+                Launch.exit();
             }
         });
 
@@ -1430,9 +1430,5 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JButton workspaceDirSelect;
     // End of variables declaration                   
     // </editor-fold>
-
-    private void onWindowClosed() {
-        LogHelper.info("Close");
-    }
 }
 //Export file browser. Current directory no file name
