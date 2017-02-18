@@ -19,6 +19,10 @@
 		{
 			"url" : "http://jcenter.bintray.com/org/apache/logging/log4j/log4j-api/2.5/log4j-api-2.5.jar",
 			"md5" : "B006C549EE3D523388AA4DF022324830"
+		},
+		{
+			"url" : "http://maven.covers1624.net/com/bulenkov/darkula/darcula.jar",
+			"md5" : "189A81314C5435DCEDCB8331BCD0483E"
 		}
 	]
 }

@@ -29,12 +29,9 @@ public class LauncherGui extends JOptionPane implements ILauncherDisplay {
         setMessageType(JOptionPane.INFORMATION_MESSAGE);
         setMessage(makeProgress());
         setOptions(new Object[] { "Stop" });
-        addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getSource() == LauncherGui.this && evt.getPropertyName().equals(VALUE_PROPERTY)) {
-                    requestClose("This will stop " + name + " from launching.\nAre you sure you want to do this?");
-                }
+        addPropertyChangeListener(evt -> {
+            if (evt.getSource() == LauncherGui.this && evt.getPropertyName().equals(VALUE_PROPERTY)) {
+                requestClose("This will stop " + name + " from launching.\nAre you sure you want to do this?");
             }
         });
         dialog = new JDialog(null, "Hello", Dialog.ModalityType.MODELESS);

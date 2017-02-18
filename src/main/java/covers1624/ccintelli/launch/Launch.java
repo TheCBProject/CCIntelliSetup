@@ -35,22 +35,6 @@ public class Launch {
 	public static boolean NOT_NULL_ASSERTIONS = false;
 
 	public static void main(String[] args) throws Exception {
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
-		List<File> recents = new ArrayList<>();
-
-		recents.add(new File("C:\\RecentDir1"));
-		recents.add(new File("C:\\RecentDir2"));
-		recents.add(new File("C:\\RecentDir3"));
-		recents.add(new File("C:\\RecentDir4"));
-
-		SetupDialog setup = new SetupDialog(recents);
-		File workspaceDir = setup.getDirectory();
-
-		if (workspaceDir == null) {
-			LogHelper.info("No workspace selected. Canceling launch!");
-			return;
-		}
 
 		BUILD_DIR = new File(".", "build");
 		LIB_DIR = new File(BUILD_DIR, "libs");
@@ -64,6 +48,22 @@ public class Launch {
 		Utils.tryCreateDirectory(LIB_DIR);
 
 		LaunchHandler.runPreLaunch("CCIntelliSetup", Launch.class.getResourceAsStream("/Dependencies.json"), LIB_DIR, null, null);
+        UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");
+
+        List<File> recents = new ArrayList<>();
+
+        //recents.add(new File("C:\\RecentDir1"));
+        //recents.add(new File("C:\\RecentDir2"));
+        //recents.add(new File("C:\\RecentDir3"));
+        //recents.add(new File("C:\\RecentDir4"));
+
+        SetupDialog setup = new SetupDialog(recents);
+        File workspaceDir = setup.getDirectory();
+
+        if (workspaceDir == null) {
+            LogHelper.info("No workspace selected. Canceling launch!");
+            return;
+        }
 
         LogHelper.info("CCIntelliSetup \\o/");
 		Thread consoleThread = new Thread() {
