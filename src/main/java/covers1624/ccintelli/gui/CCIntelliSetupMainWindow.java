@@ -1387,15 +1387,26 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     }
 
     private GroupNode createGroupChain(String group, String parentGroup) {
-        GroupNode node;
+        GroupNode node = null;
         String name = group.contains("/") ? group.substring(0, group.indexOf("/")) : group;
 
         if (groupNodes.containsKey(group)) {
             node = groupNodes.get(group);
         }
         else {
-            node = new GroupNode(name);
-            groupNodes.put(parentGroup + name, node);
+            for (GroupNode node1 : groupNodes.values()) {
+                if (node1.group.equals(name)) {
+                    node = node1;
+                }
+            }
+
+            if (node == null) {
+                node = new GroupNode(name);
+                groupNodes.put(parentGroup + name, node);
+                if (groupNodes.containsKey(parentGroup)) {
+                    groupNodes.get(parentGroup).add(node);
+                }
+            }
         }
 
         if (group.contains("/")) {
