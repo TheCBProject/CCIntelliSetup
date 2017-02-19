@@ -2,7 +2,6 @@ package covers1624.ccintelli.launch;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
@@ -48,6 +47,7 @@ public class RecentWorkspaceSerializer {
     }
 
     public void save(List<File> files) {
+        files = cleanList(files);
         if (files.isEmpty()) {
             FILE.delete();
             return;
@@ -55,6 +55,7 @@ public class RecentWorkspaceSerializer {
         try {
             JsonWriter writer = new JsonWriter(new FileWriter(FILE));
             writer.setLenient(true);
+            writer.setIndent("    ");
             JsonArray array = new JsonArray();
             for (File file : files) {
                 array.add(file.getAbsolutePath());
@@ -67,5 +68,14 @@ public class RecentWorkspaceSerializer {
         }
     }
 
+    private static List<File> cleanList(List<File> files) {
+        List<File> ret = new LinkedList<>();
+        for (File file : files) {
+            if (!ret.contains(file)) {
+                ret.add(file);
+            }
+        }
+        return ret;
+    }
 
 }

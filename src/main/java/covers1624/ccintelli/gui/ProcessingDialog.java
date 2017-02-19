@@ -1,5 +1,7 @@
 package covers1624.ccintelli.gui;
 
+import covers1624.ccintelli.launch.Launch;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +19,6 @@ public class ProcessingDialog extends JDialog {
         jTextField1.setText(message);
 
         pack();
-        setVisible(true);
     }
 
     /**
@@ -39,7 +40,7 @@ public class ProcessingDialog extends JDialog {
             }
         });
 
-        jButton1.setText("Open Consol");
+        jButton1.setText("Open Console");
         jButton1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 openConsoleButton(evt);
@@ -72,14 +73,13 @@ public class ProcessingDialog extends JDialog {
     }// </editor-fold>
 
     private void openConsoleButton(ActionEvent evt) {
-
+        Launch.console.setVisible(true);
     }
 
     /**
      * Called when the user attempts to close the window
      */
     private void formWindowClosing(WindowEvent evt) {
-        // TODO add your handling code here:
     }
 
     // Variables declaration - do not modify                     
