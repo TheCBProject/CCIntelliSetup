@@ -23,6 +23,7 @@ public class CCIntelliSetupConsole extends javax.swing.JFrame {
             }
         });
         closeButton.addActionListener(e -> tryClose());
+        setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
     }
 
     private void tryClose() {
