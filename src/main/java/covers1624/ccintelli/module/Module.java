@@ -1,5 +1,9 @@
 package covers1624.ccintelli.module;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import covers1624.ccintelli.launch.Launch;
 import covers1624.ccintelli.module.OrderEntry.Scope;
 import covers1624.ccintelli.module.OrderEntry.Type;
 import covers1624.ccintelli.util.EnumLanguageLevel;
@@ -134,5 +138,54 @@ public class Module {
 			throw new RuntimeException("Unable to parse existing forge XML!", e);
 		}
 	}
+
+	public JsonElement toJson() {
+
+        JsonObject object = new JsonObject();
+        object.addProperty("name", NAME);
+        object.addProperty("group", GROUP);
+
+        object.addProperty("content_root", CONTENT_ROOT.getAbsolutePath().replace(Launch.SETUP_DIR.getAbsolutePath(), "").substring(1));
+
+        object.addProperty("language_level", langLevel.name());
+        object.addProperty("bytecode_level", bytecodeLevel.name());
+        JsonArray array = new JsonArray();
+        for (OrderEntry entry : orderEntries) {
+            if (entry instanceof ModuleEntry) {
+                array.add(((ModuleEntry) entry).toJson());
+            }
+        }
+        object.add("module_entries", array);
+
+        JsonArray srcDirs = new JsonArray();
+        for (String file : sourceFolders) {
+            srcDirs.add(file.replace(Launch.SETUP_DIR.getAbsolutePath(), "").substring(1));
+        }
+
+        object.add("src_dirs", srcDirs);
+
+        return object;
+    }
+
+    public static Module fromJson(JsonObject object) {
+
+        Module module = new Module();
+        module.NAME = object.get("name").getAsString();
+        module.GROUP = object.get("group").getAsString();
+        String contentRoot = object.get("content_root").getAsString();
+        module.CONTENT_ROOT = new File(Launch.SETUP_DIR, contentRoot);
+        module.langLevel = EnumLanguageLevel.fromName(object.get("language_level").getAsString());
+        module.bytecodeLevel = EnumLanguageLevel.fromName(object.get("bytecode_level").getAsString());
+
+        for (JsonElement moduleElement : object.getAsJsonArray("module_entries")) {
+            module.orderEntries.add(ModuleEntry.fromJson(moduleElement.getAsJsonObject()));
+        }
+
+        for (JsonElement element : object.getAsJsonArray("src_dirs")) {
+            module.sourceFolders.add(Launch.SETUP_DIR.getAbsolutePath() + "/" + element.getAsString());
+        }
+
+        return module;
+    }
 
 }

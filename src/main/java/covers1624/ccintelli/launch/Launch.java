@@ -21,6 +21,7 @@ public class Launch {
 
     public static File WORKING_DIR;
     public static File LIB_DIR;
+    public static File SAVES_DIR;
 
     public static File SETUP_DIR;
     public static File WORKSPACE;
@@ -39,10 +40,12 @@ public class Launch {
     private static final List<Runnable> RUNNABLES = new LinkedList<>();
 
     public static void main(String[] args) throws Exception {
-        WORKING_DIR = Utils.getWorkingDirectory("ccintelli");
 
+        WORKING_DIR = Utils.getWorkingDirectory("ccintelli");
         LIB_DIR = new File(WORKING_DIR, "libs");
+        SAVES_DIR = new File(WORKING_DIR, "saves");
         Utils.tryCreateDirectory(LIB_DIR);
+        Utils.tryCreateDirectory(SAVES_DIR);
 
         LaunchHandler.runPreLaunch("CCIntelliSetup", Launch.class.getResourceAsStream("/Dependencies.json"), LIB_DIR, null, null);
         UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");

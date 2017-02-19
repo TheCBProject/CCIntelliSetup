@@ -28,4 +28,13 @@ public enum EnumLanguageLevel {
     public String getBytecodeTarget() {
         return GUI_NAME;
     }
+
+    public static EnumLanguageLevel fromName(String name) {
+        for (EnumLanguageLevel level : values()) {
+            if (level.GUI_NAME.equals(name) || level.XML_NAME.equals(name)) {
+                return level;
+            }
+        }
+        throw new IllegalArgumentException("Unknown EnumLanguageLevel: " + name);
+    }
 }

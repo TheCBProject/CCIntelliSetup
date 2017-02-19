@@ -1,5 +1,6 @@
 package covers1624.ccintelli.gui;
 
+import covers1624.ccintelli.launch.SetupSerializer;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.module.ModuleEntry;
 import covers1624.ccintelli.module.OrderEntry.Scope;
@@ -7,6 +8,7 @@ import covers1624.ccintelli.util.EnumLanguageLevel;
 import covers1624.ccintelli.util.logging.LogHelper;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,10 +58,21 @@ public class GuiFields {
     }
 
     public static void importSetup(File fileToImport) {
-        LogHelper.info("Import From: " + fileToImport);
+        try {
+            int before = modules.size();
+            SetupSerializer.readModules(fileToImport);
+            LogHelper.info("Successfully imported %s modules from: %s", modules.size() - before, fileToImport.getAbsolutePath());
+        } catch (IOException e) {
+            LogHelper.errorError("Exception was thrown whilst importing modules from: %s", e, fileToImport.getAbsolutePath());
+        }
     }
 
     public static void exportSetup(File targetFile) {
-        LogHelper.info("Export As: " + targetFile);
+        try {
+            SetupSerializer.writeModules(targetFile);
+            LogHelper.info("Successfully exported %s modules to: %s",  modules.size() - 1, targetFile.getAbsolutePath());
+        } catch (IOException e) {
+            LogHelper.errorError("Exception was thrown whils exporting modules to: %s", e, targetFile.getAbsolutePath());
+        }
     }
 }

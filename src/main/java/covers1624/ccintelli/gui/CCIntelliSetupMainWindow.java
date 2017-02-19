@@ -1062,8 +1062,9 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         FileNameExtensionFilter filter;
-        chooser.addChoosableFileFilter(filter = new FileNameExtensionFilter("JSON (.json)", ".json"));
+        chooser.addChoosableFileFilter(filter = new FileNameExtensionFilter("JSON (.json)", "json"));
         chooser.setFileFilter(filter);
+        chooser.setCurrentDirectory(Launch.SAVES_DIR);
 
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             if (!chooser.getSelectedFile().exists()) {
@@ -1071,6 +1072,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                 return;
             }
             GuiFields.importSetup(chooser.getSelectedFile());
+            reloadModuleTree();
         }
     }
 
@@ -1078,8 +1080,9 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         FileNameExtensionFilter filter;
-        chooser.addChoosableFileFilter(filter = new FileNameExtensionFilter("JSON (.json)", ".json"));
+        chooser.addChoosableFileFilter(filter = new FileNameExtensionFilter("JSON (.json)", "json"));
         chooser.setFileFilter(filter);
+        chooser.setCurrentDirectory(Launch.SAVES_DIR);
 
         if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             if (chooser.getSelectedFile().exists()) {
@@ -1098,6 +1101,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
             else {
                 GuiFields.exportSetup(chooser.getSelectedFile());
             }
+            reloadModuleTree();
         }
     }
 

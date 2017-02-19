@@ -1,5 +1,6 @@
 package covers1624.ccintelli.module;
 
+import com.google.gson.JsonObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -21,4 +22,19 @@ public class ModuleEntry extends OrderEntry {
 		element.setAttribute("module-name", NAME);
 		return element;
 	}
+
+    public JsonObject toJson() {
+        JsonObject object = new JsonObject();
+        object.addProperty("export", export);
+        object.addProperty("scope", scope.name);
+        object.addProperty("module", NAME);
+        return object;
+    }
+
+    public static ModuleEntry fromJson(JsonObject element) {
+	    boolean export = element.get("export").getAsBoolean();
+	    Scope scope = Scope.fromString(element.get("scope").getAsString());
+	    String module = element.get("module").getAsString();
+        return null;
+    }
 }
