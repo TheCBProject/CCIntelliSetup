@@ -40,6 +40,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private Module selectedModule = null;
     private ModuleNode rcNode = null;
     private DefaultListModel<String> srcListModel = new DefaultListModel<>();
+    private DefaultListModel<String> corePluginListModel = new DefaultListModel<>();
     private LinkedList<ModuleEntry> selectedModuleEntries = new LinkedList<>();
     private PopupMenu treeRCMenu = new PopupMenu();
     private Map<String, GroupNode> groupNodes = new HashMap<>();
@@ -64,6 +65,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         addNonNullAssertionsCheckbox.setSelected(Launch.NOT_NULL_ASSERTIONS);
 
         selectedModuleSourceList.setModel(srcListModel);
+        corePluginList.setModel(corePluginListModel);
 
         for (EnumLanguageLevel level : EnumLanguageLevel.values()) {
             projectLangLevel.addItem(level.getGuiName());
@@ -78,6 +80,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         setupModuleTree();
         setupDepTable();
         reloadModuleTree();
+        reloadCorePluginList();
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
@@ -120,6 +123,12 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         compilerOutDirSelect = new JButton();
         compilerOutDirField = new JTextField();
         jLabel6 = new JLabel();
+        jLabel14 = new JLabel();
+        jScrollPane3 = new JScrollPane();
+        corePluginList = new JList<>();
+        addCorePlugin = new JButton();
+        removeCorePlugin = new JButton();
+        editCorePlugin = new JButton();
         rightSetupPanel = new JPanel();
         jLabel2 = new JLabel();
         compilerSelector = new JComboBox<>();
@@ -162,7 +171,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         helpMenu = new JMenu();
         aboutMenuItem = new JMenuItem();
 
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         setupLabel.setHorizontalAlignment(SwingConstants.CENTER);
         setupLabel.setText("All the setup stuff.");
@@ -230,6 +239,35 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
         jLabel6.setText("Compiler output directory:");
 
+        jLabel14.setText("FML Core Plugins:");
+
+        corePluginList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane3.setViewportView(corePluginList);
+
+        addCorePlugin.setText("+");
+        addCorePlugin.setToolTipText("Add new FML Core Plugin");
+        addCorePlugin.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                addCorePlugin(evt);
+            }
+        });
+
+        removeCorePlugin.setText("-");
+        removeCorePlugin.setToolTipText("Remove selected FML Core Plugin");
+        removeCorePlugin.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                removeCorePlugin(evt);
+            }
+        });
+
+        editCorePlugin.setText("E");
+        editCorePlugin.setToolTipText("Edit Selected FML Core Plugin");
+        editCorePlugin.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                editCorePlugin(evt);
+            }
+        });
+
         GroupLayout leftSetupPanelLayout = new GroupLayout(leftSetupPanel);
         leftSetupPanel.setLayout(leftSetupPanelLayout);
         leftSetupPanelLayout.setHorizontalGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -249,16 +287,24 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(runDirSelect))
                                 .addGroup(leftSetupPanelLayout.createSequentialGroup()
-                                        .addComponent(compilerOutDirField)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(compilerOutDirSelect))
-                                .addGroup(leftSetupPanelLayout.createSequentialGroup()
                                         .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                 .addComponent(jLabel3)
                                                 .addComponent(jLabel4)
                                                 .addComponent(jLabel5)
-                                                .addComponent(jLabel6))
-                                        .addGap(0, 452, Short.MAX_VALUE)))
+                                                .addComponent(jLabel6)
+                                                .addComponent(jLabel14))
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                .addGroup(GroupLayout.Alignment.TRAILING, leftSetupPanelLayout.createSequentialGroup()
+                                        .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                .addComponent(compilerOutDirField)
+                                                .addComponent(jScrollPane3, GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                .addComponent(compilerOutDirSelect)
+                                                .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                                                        .addComponent(removeCorePlugin, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(addCorePlugin, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(editCorePlugin, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                         .addContainerGap())
         );
         leftSetupPanelLayout.setVerticalGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -287,7 +333,19 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                         .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(compilerOutDirField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(compilerOutDirSelect))
-                        .addContainerGap(169, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel14)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                .addGroup(leftSetupPanelLayout.createSequentialGroup()
+                                        .addComponent(addCorePlugin)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(removeCorePlugin)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(editCorePlugin)
+                                        .addGap(0, 15, Short.MAX_VALUE)))
+                        .addContainerGap())
         );
 
         rightSetupPanel.setBorder(BorderFactory.createEtchedBorder());
@@ -584,7 +642,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                .addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+                                                .addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE)
                                                 .addComponent(selectedModuleDirectoryField)
                                                 .addComponent(jScrollPane2)
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -725,7 +783,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Events">
+    // editor-fold defaultstate="collapsed" desc="Events">
 
     private void displayAboutText(ActionEvent evt) {
         JOptionPane.showMessageDialog(this, "//TODO Put something here!!!\n-Gui written by brandon3055\n-Back End written by covers1624", "About", JOptionPane.INFORMATION_MESSAGE);
@@ -771,6 +829,57 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
     private void compilerOutDirFieldKeyReleased(KeyEvent evt) {
         Launch.PROJECT_OUTPUT = new File(compilerOutDirField.getText());
+    }
+
+    public void reloadCorePluginList() {
+        corePluginListModel.clear();
+
+        for (String plugin : GuiFields.fmlCorePlugins) {
+            corePluginListModel.addElement(plugin);
+        }
+    }
+
+    private void addCorePlugin(ActionEvent evt) {
+        String dir = JOptionPane.showInputDialog(this, "Enter new core plugin");
+        if (dir == null || dir.isEmpty()) {
+            return;
+        }
+
+        if (GuiFields.fmlCorePlugins.contains(dir)) {
+            JOptionPane.showMessageDialog(this, "That plugin already exists!", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        GuiFields.fmlCorePlugins.add(dir);
+        reloadCorePluginList();
+    }
+
+    private void removeCorePlugin(ActionEvent evt) {
+        int index = corePluginList.getSelectedIndex();
+        if (index == -1 || index > corePluginListModel.size()) {
+            JOptionPane.showMessageDialog(this, "No core plugin selected!", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        GuiFields.fmlCorePlugins.remove(corePluginListModel.get(index));
+        reloadCorePluginList();
+    }
+
+    private void editCorePlugin(ActionEvent evt) {
+        int index = corePluginList.getSelectedIndex();
+        if (index == -1 || index > corePluginListModel.size()) {
+            JOptionPane.showMessageDialog(this, "Please select core plugin to edit", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String newDir = JOptionPane.showInputDialog(this, "Edit Core Plugin", corePluginListModel.get(index));
+        if (newDir == null || newDir.isEmpty()) {
+            return;
+        }
+
+        GuiFields.fmlCorePlugins.remove(corePluginListModel.get(index));
+        GuiFields.fmlCorePlugins.add(newDir);
+        reloadCorePluginList();
     }
 
     // </editor-fold>
@@ -1117,7 +1226,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         dialog.setVisible(true);
     }
 
-    // </editor-fold>
+    // /editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Misc">
 
@@ -1377,6 +1486,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Variables">
     // Variables declaration - do not modify                     
     private JMenuItem aboutMenuItem;
+    private JButton addCorePlugin;
     private JButton addModuleButton;
     private JButton addModuleDep;
     private JTextField addModuleField;
@@ -1385,8 +1495,10 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JTextField compilerOutDirField;
     private JButton compilerOutDirSelect;
     private JComboBox<String> compilerSelector;
+    private JList<String> corePluginList;
     private DefaultTableModel depTablelModel;
     private JTable depTable;
+    private JButton editCorePlugin;
     private JButton editModuleSrc;
     private JMenuItem exportButton;
     private JMenu fileMenu;
@@ -1398,6 +1510,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JLabel jLabel11;
     private JLabel jLabel12;
     private JLabel jLabel13;
+    private JLabel jLabel14;
     private JLabel jLabel2;
     private JLabel jLabel3;
     private JLabel jLabel4;
@@ -1410,6 +1523,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JPanel jPanel1;
     private JScrollPane jScrollPane1;
     private JScrollPane jScrollPane2;
+    private JScrollPane jScrollPane3;
     private JScrollPane jScrollPane4;
     private JPanel leftModulePanel;
     private JPanel leftSetupPanel;
@@ -1423,6 +1537,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JTree moduleTree;
     private JComboBox<String> projectBytecodeLevel;
     private JComboBox<String> projectLangLevel;
+    private JButton removeCorePlugin;
     private JButton removeModuleButton;
     private JButton removeModuleDep;
     private JButton removeModuleSrc;
