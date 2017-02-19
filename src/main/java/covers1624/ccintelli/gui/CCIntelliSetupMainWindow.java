@@ -865,7 +865,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
         Module module = new Module();
         module.NAME = addModuleField.getText();
-        module.CONTENT_ROOT = new File(module.NAME);
+        module.CONTENT_ROOT = new File(Launch.SETUP_DIR, module.NAME);
         module.sourceFolders = GuiFields.findModuleSrc(module);
         module.langLevel = GuiFields.projectLangLevel;
         module.bytecodeLevel = GuiFields.projectBytecodeLevel;
@@ -912,7 +912,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
             return;
         }
 
-        selectedModule.CONTENT_ROOT = new File(selectedModuleDirectoryField.getText());
+        selectedModule.CONTENT_ROOT = new File(Launch.SETUP_DIR, selectedModuleDirectoryField.getText());
     }
 
     private void addModuleSrcActionPerformed(ActionEvent evt) {
