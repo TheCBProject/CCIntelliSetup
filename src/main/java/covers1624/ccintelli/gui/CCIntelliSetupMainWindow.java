@@ -1221,6 +1221,9 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private void generateWorkspaceButton(ActionEvent evt) {
         ProcessingDialog dialog = new ProcessingDialog(this, "Setting up the workspace, \nClick the button bellow to see the console if you have closed it.");
         final String projectName = JOptionPane.showInputDialog("Enter a name for the Intellij project..", Launch.SETUP_DIR.getName());
+        if (projectName == null || projectName.isEmpty()) {
+            return;
+        }
         Launch.scheduleTask(() -> {
             WorkspaceGenerator.generateWorkspace(projectName);
             dialog.dispose();
