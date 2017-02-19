@@ -5,6 +5,7 @@
  */
 package covers1624.ccintelli.gui;
 
+import com.google.common.collect.ImmutableList;
 import covers1624.ccintelli.launch.Launch;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.module.ModuleEntry;
@@ -1219,15 +1220,25 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     // </editor-fold>
 
     private void generateWorkspaceButton(ActionEvent evt) {
+
+        if (!new File(Launch.SETUP_DIR, "Forge/src").exists()) {
+            ArrayList<String> list = new ArrayList<>();
+            list.add("It appears forge is missing from: " + Launch.FORGE.getAbsolutePath());
+            list.add("Please clone forge from <a href=\"https://github.com/MinecraftForge/MinecraftForge\">here</a>.");
+            list.add("Make sure Forge's src dir is inside the above folder and not in a sub directory.");
+            InformationDialog infoDialog = new InformationDialog("Forge Missing", this, list);
+            infoDialog.dispaly();
+            return;
+        }
+
         ProcessingDialog dialog = new ProcessingDialog(this, "Setting up the workspace, \nClick the button bellow to see the console if you have closed it.");
         final String projectName = JOptionPane.showInputDialog("Enter a name for the Intellij project..", Launch.SETUP_DIR.getName());
         if (projectName == null || projectName.isEmpty()) {
+            LogHelper.info("Setup canceled.");
             return;
         }
-        Launch.scheduleTask(() -> {
-            WorkspaceGenerator.generateWorkspace(projectName);
-            dialog.dispose();
-        });
+        Launch.scheduleTask(() -> WorkspaceGenerator.generateWorkspace(projectName));
+        Launch.scheduleTask(dialog::dispose);
         dialog.setVisible(true);
     }
 
