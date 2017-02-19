@@ -61,7 +61,7 @@ public class GuiFields {
     public static void importSetup(File fileToImport) {
         try {
             int before = modules.size();
-            SetupSerializer.readModules(fileToImport);
+            SetupSerializer.readSetup(fileToImport);
             LogHelper.info("Successfully imported %s modules from: %s", modules.size() - before, fileToImport.getAbsolutePath());
         } catch (IOException e) {
             LogHelper.errorError("Exception was thrown whilst importing modules from: %s", e, fileToImport.getAbsolutePath());
@@ -70,7 +70,7 @@ public class GuiFields {
 
     public static void exportSetup(File targetFile) {
         try {
-            SetupSerializer.writeModules(targetFile);
+            SetupSerializer.writeSetup(targetFile);
             LogHelper.info("Successfully exported %s modules to: %s",  modules.size() - 1, targetFile.getAbsolutePath());
         } catch (IOException e) {
             LogHelper.errorError("Exception was thrown whils exporting modules to: %s", e, targetFile.getAbsolutePath());

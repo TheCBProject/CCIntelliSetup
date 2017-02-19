@@ -2,6 +2,7 @@ package covers1624.ccintelli.launch;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
@@ -19,30 +20,52 @@ import java.io.IOException;
  */
 public class SetupSerializer {
 
-    public static void readModules(File json) throws IOException {
+    public static void readSetup(File json) throws IOException {
 
         JsonReader reader = new JsonReader(new FileReader(json));
         reader.setLenient(true);
         JsonParser parser = new JsonParser();
-        JsonArray array = parser.parse(reader).getAsJsonArray();
+        JsonObject object = parser.parse(reader).getAsJsonObject();
+        JsonArray array = object.getAsJsonArray("modules");
         for (JsonElement element : array) {
-            GuiFields.modules.add(Module.fromJson(element.getAsJsonObject()));
+            Module module = Module.fromJson(element.getAsJsonObject());
+            if (!containsModule(module)) {
+                GuiFields.modules.add(module);
+            }
+        }
+        for (JsonElement element : object.getAsJsonArray("core_plugins")) {
+            GuiFields.fmlCorePlugins.add(element.getAsString());
         }
     }
 
-    public static void writeModules(File json) throws IOException {
+    public static void writeSetup(File json) throws IOException {
         JsonWriter writer = new JsonWriter(new FileWriter(json));
         writer.setLenient(true);
         writer.setIndent("    ");
 
-        JsonArray array = new JsonArray();
+        JsonObject object = new JsonObject();
+        JsonArray moduleArray = new JsonArray();
         for (Module module : GuiFields.modules) {
             if (!module.NAME.equals("Forge")) {
-                array.add(module.toJson());
+                moduleArray.add(module.toJson());
             }
         }
-
-        Streams.write(array, writer);
+        object.add("modules", moduleArray);
+        JsonArray corePlugins = new JsonArray();
+        for (String corePlugin : GuiFields.fmlCorePlugins) {
+            corePlugins.add(corePlugin);
+        }
+        object.add("core_plugins", corePlugins);
+        Streams.write(object, writer);
         writer.flush();
+    }
+
+    private static boolean containsModule(Module test) {
+        for (Module suspect : GuiFields.modules) {
+            if (suspect.NAME.equals(test.NAME)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

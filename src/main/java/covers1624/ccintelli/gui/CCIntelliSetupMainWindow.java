@@ -1182,6 +1182,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
             }
             GuiFields.importSetup(chooser.getSelectedFile());
             reloadModuleTree();
+            reloadCorePluginList();
         }
     }
 
@@ -1211,6 +1212,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                 GuiFields.exportSetup(chooser.getSelectedFile());
             }
             reloadModuleTree();
+            reloadCorePluginList();
         }
     }
 
