@@ -65,9 +65,9 @@ public class ProjectGenerator {
     }
 
 
-    public static void generateWorkspace() {
+    public static void generateWorkspace(String projectName) {
         LogHelper.info("Generating Project configuration..");
-        File workspaceIPR = new File(Launch.WORKSPACE, "Workspace.ipr");
+        File workspaceIPR = new File(Launch.WORKSPACE, projectName + ".ipr");
         try {
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

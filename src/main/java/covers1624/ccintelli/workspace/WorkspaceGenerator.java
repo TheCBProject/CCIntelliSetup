@@ -22,7 +22,7 @@ public class WorkspaceGenerator {
     public static List<String> forgeATLines;
     public static Map<String, List<String>> moduleAtLines;
 
-    public static void goGoGadgetMakeTheIdeaThings() {
+    public static void generateWorkspace(String projectName) {
         LogHelper.info("Generating Workspace.");
         Utils.tryCreateDirectory(Launch.WORKSPACE);
         Utils.tryCreateDirectory(Launch.MODULES);
@@ -31,7 +31,7 @@ public class WorkspaceGenerator {
         mergeATs();
         runForgeSetup();
         exportModules();
-        ProjectGenerator.generateWorkspace();
+        ProjectGenerator.generateWorkspace(projectName);
         LogHelper.info("Done!");
     }
 

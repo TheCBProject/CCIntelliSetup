@@ -29,6 +29,8 @@ public class GuiLogAppender extends AbstractAppender {
 
     @Override
     public void append(LogEvent event) {
-        Launch.console.println(getLayout().toSerializable(event).toString());
+        if (Launch.console != null) {
+            Launch.console.println(getLayout().toSerializable(event).toString());
+        }
     }
 }

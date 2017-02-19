@@ -1104,7 +1104,8 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     // </editor-fold>
 
     private void generateWorkspaceButton(ActionEvent evt) {
-        Launch.scheduleTask(() -> WorkspaceGenerator.goGoGadgetMakeTheIdeaThings());
+        final String projectName = JOptionPane.showInputDialog("Enter a name for the Intellij project..", Launch.SETUP_DIR.getName());
+        Launch.scheduleTask(() -> WorkspaceGenerator.generateWorkspace(projectName));
     }
 
     // </editor-fold>

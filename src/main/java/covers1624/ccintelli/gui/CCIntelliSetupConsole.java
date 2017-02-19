@@ -27,9 +27,7 @@ public class CCIntelliSetupConsole extends javax.swing.JFrame {
     }
 
     private void tryClose() {
-        if (JOptionPane.showConfirmDialog(this, "This will only close the console not the main program.", "Close?", JOptionPane.OK_CANCEL_OPTION) == 0) {
-            dispose();
-        }
+        setVisible(false);
     }
 
     public void setStatus(final String statusText) {

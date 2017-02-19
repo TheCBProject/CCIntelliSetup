@@ -46,6 +46,7 @@ public class Launch {
 
         LaunchHandler.runPreLaunch("CCIntelliSetup", Launch.class.getResourceAsStream("/Dependencies.json"), LIB_DIR, null, null);
         UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");
+        console = new CCIntelliSetupConsole();
 
         RecentWorkspaceSerializer workspaceSerializer = new RecentWorkspaceSerializer(new File(WORKING_DIR, "recents.json"));
         List<File> recents = new LinkedList<>(workspaceSerializer.load());
@@ -65,7 +66,6 @@ public class Launch {
         MODULES = new File(WORKSPACE, "Modules");
         FORGE = new File(SETUP_DIR, "Forge");
 
-        console = new CCIntelliSetupConsole();
         console.setVisible(true);
         window = new CCIntelliSetupMainWindow();
         window.setVisible(true);
