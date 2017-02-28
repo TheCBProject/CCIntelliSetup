@@ -1,6 +1,7 @@
 package covers1624.ccintelli.gui;
 
 import com.google.common.collect.ImmutableList;
+import covers1624.ccintelli.launch.Launch;
 import covers1624.ccintelli.launch.SetupSerializer;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.module.ModuleEntry;
@@ -32,7 +33,7 @@ public class GuiFields {
     static {
         forgeModule = new Module();
         forgeModule.NAME = "Forge";
-        forgeModule.CONTENT_ROOT = new File("Forge");
+        forgeModule.CONTENT_ROOT = new File(Launch.SETUP_DIR, "Forge");
         forgeModule.sourceFolders.addAll(findModuleSrc(forgeModule));
         forgeModule.langLevel = forgeModule.bytecodeLevel = EnumLanguageLevel.JDK_1_6;
         modules.add(forgeModule);
