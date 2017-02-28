@@ -22,6 +22,7 @@ public class GuiFields {
     public static List<Module> modules = new LinkedList<>();
     public static Module forgeModule;
     public static List<String> fmlCorePlugins = new LinkedList<>();
+    public static List<String> vmArgs = new LinkedList<>();
 
     public static EnumLanguageLevel projectLangLevel = EnumLanguageLevel.JDK_1_8;
     public static EnumLanguageLevel projectBytecodeLevel = EnumLanguageLevel.JDK_1_8;

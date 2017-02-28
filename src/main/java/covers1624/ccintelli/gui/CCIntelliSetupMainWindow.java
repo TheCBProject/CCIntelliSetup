@@ -5,7 +5,6 @@
  */
 package covers1624.ccintelli.gui;
 
-import com.google.common.collect.ImmutableList;
 import covers1624.ccintelli.launch.Launch;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.module.ModuleEntry;
@@ -42,6 +41,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private ModuleNode rcNode = null;
     private DefaultListModel<String> srcListModel = new DefaultListModel<>();
     private DefaultListModel<String> corePluginListModel = new DefaultListModel<>();
+    private DefaultListModel<String> vmArgListModel = new DefaultListModel<>();
     private LinkedList<ModuleEntry> selectedModuleEntries = new LinkedList<>();
     private PopupMenu treeRCMenu = new PopupMenu();
     private Map<String, GroupNode> groupNodes = new HashMap<>();
@@ -67,6 +67,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
         selectedModuleSourceList.setModel(srcListModel);
         corePluginList.setModel(corePluginListModel);
+        vmArgList.setModel(vmArgListModel);
 
         for (EnumLanguageLevel level : EnumLanguageLevel.values()) {
             projectLangLevel.addItem(level.getGuiName());
@@ -82,6 +83,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         setupDepTable();
         reloadModuleTree();
         reloadCorePluginList();
+        reloadvmArgList();
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
@@ -124,7 +126,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         compilerOutDirSelect = new JButton();
         compilerOutDirField = new JTextField();
         jLabel6 = new JLabel();
-        jLabel14 = new JLabel();
+        jLabel10 = new JLabel();
         jScrollPane3 = new JScrollPane();
         corePluginList = new JList<>();
         addCorePlugin = new JButton();
@@ -135,10 +137,16 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         compilerSelector = new JComboBox<>();
         jLabel1 = new JLabel();
         addNonNullAssertionsCheckbox = new JCheckBox();
-        jButton1 = new JButton();
-        jLabel10 = new JLabel();
-        projectLangLevel = new JComboBox<>();
+        jScrollPane5 = new JScrollPane();
+        vmArgList = new JList<>();
+        editVMArg = new JButton();
+        addVMArg = new JButton();
+        removeVMArg = new JButton();
         jLabel11 = new JLabel();
+        jButton1 = new JButton();
+        jLabel12 = new JLabel();
+        jLabel13 = new JLabel();
+        projectLangLevel = new JComboBox<>();
         projectBytecodeLevel = new JComboBox<>();
         modulePanel = new JPanel();
         leftModulePanel = new JPanel();
@@ -161,9 +169,9 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         removeModuleDep = new JButton();
         jScrollPane4 = new JScrollPane();
         depTable = new JTable();
-        jLabel12 = new JLabel();
+        jLabel14 = new JLabel();
         moduleLanguageLevel = new JComboBox<>();
-        jLabel13 = new JLabel();
+        jLabel15 = new JLabel();
         moduleBytecodeLevel = new JComboBox<>();
         jMenuBar1 = new JMenuBar();
         fileMenu = new JMenu();
@@ -240,13 +248,12 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
         jLabel6.setText("Compiler output directory:");
 
-        jLabel14.setText("FML Core Plugins:");
+        jLabel10.setText("FML Core Plugins:");
 
         corePluginList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jScrollPane3.setViewportView(corePluginList);
 
         addCorePlugin.setText("+");
-        addCorePlugin.setToolTipText("Add new FML Core Plugin");
         addCorePlugin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 addCorePlugin(evt);
@@ -254,7 +261,6 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         });
 
         removeCorePlugin.setText("-");
-        removeCorePlugin.setToolTipText("Remove selected FML Core Plugin");
         removeCorePlugin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 removeCorePlugin(evt);
@@ -262,7 +268,6 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         });
 
         editCorePlugin.setText("E");
-        editCorePlugin.setToolTipText("Edit Selected FML Core Plugin");
         editCorePlugin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 editCorePlugin(evt);
@@ -293,18 +298,18 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                                                 .addComponent(jLabel4)
                                                 .addComponent(jLabel5)
                                                 .addComponent(jLabel6)
-                                                .addComponent(jLabel14))
+                                                .addComponent(jLabel10))
                                         .addGap(0, 0, Short.MAX_VALUE))
                                 .addGroup(GroupLayout.Alignment.TRAILING, leftSetupPanelLayout.createSequentialGroup()
-                                        .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                .addComponent(compilerOutDirField)
-                                                .addComponent(jScrollPane3, GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE))
+                                        .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                .addComponent(jScrollPane3, GroupLayout.Alignment.LEADING)
+                                                .addComponent(compilerOutDirField))
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                 .addComponent(compilerOutDirSelect)
+                                                .addComponent(addCorePlugin)
                                                 .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
                                                         .addComponent(removeCorePlugin, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addComponent(addCorePlugin, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                         .addComponent(editCorePlugin, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                         .addContainerGap())
         );
@@ -335,7 +340,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                                 .addComponent(compilerOutDirField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(compilerOutDirSelect))
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel14)
+                        .addComponent(jLabel10)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(leftSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -345,7 +350,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                                         .addComponent(removeCorePlugin)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(editCorePlugin)
-                                        .addGap(0, 15, Short.MAX_VALUE)))
+                                        .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())
         );
 
@@ -368,6 +373,32 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
             }
         });
 
+        vmArgList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane5.setViewportView(vmArgList);
+
+        editVMArg.setText("E");
+        editVMArg.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                editVMArg(evt);
+            }
+        });
+
+        addVMArg.setText("+");
+        addVMArg.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                addVMArg(evt);
+            }
+        });
+
+        removeVMArg.setText("-");
+        removeVMArg.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                removeVMArg(evt);
+            }
+        });
+
+        jLabel11.setText("Optional VM Arguments:");
+
         jButton1.setText("Generate Workspace");
         jButton1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -375,15 +406,15 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
             }
         });
 
-        jLabel10.setText("Project Language Level:");
+        jLabel12.setText("Project Language Level:");
+
+        jLabel13.setText("Project Bytecode Level:");
 
         projectLangLevel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 selectProjectLangLevel(evt);
             }
         });
-
-        jLabel11.setText("Project Bytecode Level:");
 
         projectBytecodeLevel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -397,30 +428,35 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                 .addGroup(rightSetupPanelLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addGroup(rightSetupPanelLayout.createSequentialGroup()
-                                        .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                .addGroup(rightSetupPanelLayout.createSequentialGroup()
-                                                        .addComponent(jLabel2)
-                                                        .addGap(62, 62, 62)
-                                                        .addComponent(compilerSelector, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                                .addGroup(rightSetupPanelLayout.createSequentialGroup()
-                                                        .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                                .addComponent(jLabel10)
-                                                                .addComponent(jLabel11))
-                                                        .addGap(18, 18, 18)
-                                                        .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                                .addComponent(projectBytecodeLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(projectLangLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
-                                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jButton1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(GroupLayout.Alignment.TRAILING, rightSetupPanelLayout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 189, GroupLayout.PREFERRED_SIZE)
-                                        .addGap(6, 6, 6))
+                                        .addComponent(jScrollPane5, GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                .addComponent(addVMArg)
+                                                .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                                                        .addComponent(removeVMArg, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(editVMArg, GroupLayout.Alignment.LEADING))))
+                                .addGroup(rightSetupPanelLayout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(compilerSelector, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(rightSetupPanelLayout.createSequentialGroup()
+                                        .addComponent(jLabel13)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(projectBytecodeLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGroup(rightSetupPanelLayout.createSequentialGroup()
                                         .addComponent(jLabel1)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(addNonNullAssertionsCheckbox)
-                                        .addGap(0, 0, Short.MAX_VALUE))))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(addNonNullAssertionsCheckbox))
+                                .addGroup(rightSetupPanelLayout.createSequentialGroup()
+                                        .addComponent(jLabel11)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                .addGroup(rightSetupPanelLayout.createSequentialGroup()
+                                        .addComponent(jLabel12)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(projectLangLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())
         );
         rightSetupPanelLayout.setVerticalGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(rightSetupPanelLayout.createSequentialGroup()
@@ -430,18 +466,30 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                                 .addComponent(compilerSelector, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel10)
+                                .addComponent(jLabel12)
                                 .addComponent(projectLangLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel11)
+                                .addComponent(jLabel13)
                                 .addComponent(projectBytecodeLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel1)
                                 .addComponent(addNonNullAssertionsCheckbox))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE)
+                        .addGap(101, 101, 101)
+                        .addComponent(jButton1)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel11)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(rightSetupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane5, GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                .addGroup(rightSetupPanelLayout.createSequentialGroup()
+                                        .addComponent(addVMArg)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(removeVMArg)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(editVMArg)
+                                        .addGap(0, 18, Short.MAX_VALUE)))
                         .addContainerGap())
         );
 
@@ -454,8 +502,8 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                                 .addGroup(setupPanelLayout.createSequentialGroup()
                                         .addComponent(leftSetupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(rightSetupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addComponent(setupLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(rightSetupPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(setupLabel, GroupLayout.DEFAULT_SIZE, 863, Short.MAX_VALUE))
                         .addContainerGap())
         );
         setupPanelLayout.setVerticalGroup(setupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -469,7 +517,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                         .addContainerGap())
         );
 
-        mainTabbedPane.addTab("Main", setupPanel);
+        mainTabbedPane.addTab("Setup", setupPanel);
 
         leftModulePanel.setBorder(BorderFactory.createEtchedBorder());
 
@@ -522,7 +570,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         leftModulePanelLayout.setVerticalGroup(leftModulePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(leftModulePanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(addModuleField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -619,7 +667,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
             depTable.getColumnModel().getColumn(2).setMaxWidth(80);
         }
 
-        jLabel12.setText("Language Level:");
+        jLabel14.setText("Language Level:");
 
         moduleLanguageLevel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -627,7 +675,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
             }
         });
 
-        jLabel13.setText("Bytecode Level:");
+        jLabel15.setText("Bytecode Level:");
 
         moduleBytecodeLevel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -643,7 +691,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                .addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE)
+                                                .addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
                                                 .addComponent(selectedModuleDirectoryField)
                                                 .addComponent(jScrollPane2)
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -663,11 +711,11 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
-                                                        .addComponent(jLabel12)
+                                                        .addComponent(jLabel14)
                                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                         .addComponent(moduleLanguageLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                         .addGap(18, 18, 18)
-                                                        .addComponent(jLabel13)
+                                                        .addComponent(jLabel15)
                                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                         .addComponent(moduleBytecodeLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -699,11 +747,11 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(addModuleDep)
                                 .addComponent(removeModuleDep))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel12)
+                                .addComponent(jLabel14)
                                 .addComponent(moduleLanguageLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel13)
+                                .addComponent(jLabel15)
                                 .addComponent(moduleBytecodeLevel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                         .addContainerGap())
         );
@@ -881,6 +929,57 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
         GuiFields.fmlCorePlugins.remove(corePluginListModel.get(index));
         GuiFields.fmlCorePlugins.add(newDir);
         reloadCorePluginList();
+    }
+
+    public void reloadvmArgList() {
+        vmArgListModel.clear();
+
+        for (String plugin : GuiFields.vmArgs) {
+            vmArgListModel.addElement(plugin);
+        }
+    }
+
+    private void addVMArg(ActionEvent evt) {
+        String dir = JOptionPane.showInputDialog(this, "Enter VM Argument");
+        if (dir == null || dir.isEmpty()) {
+            return;
+        }
+
+        if (GuiFields.vmArgs.contains(dir)) {
+            JOptionPane.showMessageDialog(this, "That VM Argument exists!", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        GuiFields.vmArgs.add(dir);
+        reloadvmArgList();
+    }
+
+    private void removeVMArg(ActionEvent evt) {
+        int index = vmArgList.getSelectedIndex();
+        if (index == -1 || index > vmArgListModel.size()) {
+            JOptionPane.showMessageDialog(this, "No VM Argument selected!", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        GuiFields.vmArgs.remove(vmArgListModel.get(index));
+        reloadvmArgList();
+    }
+
+    private void editVMArg(ActionEvent evt) {
+        int index = vmArgList.getSelectedIndex();
+        if (index == -1 || index > vmArgListModel.size()) {
+            JOptionPane.showMessageDialog(this, "Please select an argument to edit", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String newDir = JOptionPane.showInputDialog(this, "Edit VM Argument", vmArgListModel.get(index));
+        if (newDir == null || newDir.isEmpty()) {
+            return;
+        }
+
+        GuiFields.vmArgs.remove(vmArgListModel.get(index));
+        GuiFields.vmArgs.add(newDir);
+        reloadvmArgList();
     }
 
     // </editor-fold>
@@ -1519,6 +1618,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JTextField addModuleField;
     private JButton addModuleSrc;
     private JCheckBox addNonNullAssertionsCheckbox;
+    private JButton addVMArg;
     private JTextField compilerOutDirField;
     private JButton compilerOutDirSelect;
     private JComboBox<String> compilerSelector;
@@ -1527,6 +1627,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JTable depTable;
     private JButton editCorePlugin;
     private JButton editModuleSrc;
+    private JButton editVMArg;
     private JMenuItem exportButton;
     private JMenu fileMenu;
     private JMenu helpMenu;
@@ -1538,6 +1639,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JLabel jLabel12;
     private JLabel jLabel13;
     private JLabel jLabel14;
+    private JLabel jLabel15;
     private JLabel jLabel2;
     private JLabel jLabel3;
     private JLabel jLabel4;
@@ -1552,6 +1654,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JScrollPane jScrollPane2;
     private JScrollPane jScrollPane3;
     private JScrollPane jScrollPane4;
+    private JScrollPane jScrollPane5;
     private JPanel leftModulePanel;
     private JPanel leftSetupPanel;
     private JPanel mainPanel;
@@ -1568,6 +1671,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JButton removeModuleButton;
     private JButton removeModuleDep;
     private JButton removeModuleSrc;
+    private JButton removeVMArg;
     private JPanel rightSetupPanel;
     private JTextField runDirField;
     private JButton runDirSelect;
@@ -1575,6 +1679,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
     private JList<String> selectedModuleSourceList;
     private JLabel setupLabel;
     private JPanel setupPanel;
+    private JList<String> vmArgList;
     private JTextField workspaceDirField;
     private JButton workspaceDirSelect;
     // End of variables declaration                   
