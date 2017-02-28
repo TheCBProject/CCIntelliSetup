@@ -11,19 +11,7 @@ apply plugin: 'idea'
 group = "covers1624.ccintelli"
 archivesBaseName = "CCIntelliSetup"
 
-// Define properties file
-ext.configFile = file "build.properties"
-
-import org.apache.tools.ant.filters.*;
-
-configFile.withReader {
-    // Load config.  It shall from now be referenced as simply config or project.config
-    def prop = new Properties()
-    prop.load(it)
-    project.ext.config = new ConfigSlurper().parse prop
-}
-String buildNo = 1
-version = "${project.config.version}." + buildNo
+version = "1.0-BETA"
 
 def commonManifest = {
     attributes 'Main-Class': 'covers1624.ccintelli.launch.Launch'
