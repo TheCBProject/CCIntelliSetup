@@ -3,6 +3,7 @@ package covers1624.ccintelli.workspace;
 import com.google.common.base.Strings;
 import covers1624.ccintelli.gui.GuiFields;
 import covers1624.ccintelli.launch.Launch;
+import covers1624.ccintelli.launch.SetupSerializer;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.util.ATFileFilter;
 import covers1624.ccintelli.util.ResourceWalker;
@@ -11,7 +12,10 @@ import covers1624.ccintelli.util.logging.LogHelper;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -32,6 +36,8 @@ public class WorkspaceGenerator {
         runForgeSetup();
         exportModules();
         ProjectGenerator.generateWorkspace(projectName);
+        RunConfigGenerator.generateRunConfigs(projectName);
+        exportCurrentSetup(projectName);
         LogHelper.info("Done!");
     }
 
@@ -164,6 +170,16 @@ public class WorkspaceGenerator {
                 }
                 LogHelper.info(line);
             }
+        }
+    }
+
+    private static void exportCurrentSetup(String projectName) {
+        try {
+            File export = new File(Launch.WORKSPACE, projectName + ".json");
+            SetupSerializer.writeSetup(export);
+            LogHelper.info("Your current workspace has been exported to: " + export.getAbsoluteFile().getPath());
+        } catch (Exception e) {
+            LogHelper.errorError("Exception was thrown whilst exporting setup..", e);
         }
     }
 

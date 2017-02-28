@@ -36,6 +36,10 @@ public class SetupSerializer {
         for (JsonElement element : object.getAsJsonArray("core_plugins")) {
             GuiFields.fmlCorePlugins.add(element.getAsString());
         }
+        GuiFields.vmArgs.clear();
+        for (JsonElement element : object.getAsJsonArray("vm_args")) {
+            GuiFields.vmArgs.add(element.getAsString());
+        }
     }
 
     public static void writeSetup(File json) throws IOException {
@@ -56,6 +60,13 @@ public class SetupSerializer {
             corePlugins.add(corePlugin);
         }
         object.add("core_plugins", corePlugins);
+
+        JsonArray vmArgs = new JsonArray();
+        for (String arg : GuiFields.vmArgs) {
+            vmArgs.add(arg);
+        }
+        object.add("vm_args", vmArgs);
+
         Streams.write(object, writer);
         writer.flush();
     }

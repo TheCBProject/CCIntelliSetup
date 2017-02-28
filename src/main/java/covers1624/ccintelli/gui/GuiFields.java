@@ -1,5 +1,6 @@
 package covers1624.ccintelli.gui;
 
+import com.google.common.collect.ImmutableList;
 import covers1624.ccintelli.launch.SetupSerializer;
 import covers1624.ccintelli.module.Module;
 import covers1624.ccintelli.module.ModuleEntry;
@@ -17,12 +18,13 @@ import java.util.List;
  * Created by brandon3055 on 23/01/2017.
  */
 public class GuiFields {
+
     //The order of the entries in this list will be the order they show.
     //I can apply a comparator to the list before display to sort it.
     public static List<Module> modules = new LinkedList<>();
     public static Module forgeModule;
     public static List<String> fmlCorePlugins = new LinkedList<>();
-    public static List<String> vmArgs = new LinkedList<>();
+    public static List<String> vmArgs = new LinkedList<>(ImmutableList.of("-Xmx4G", "-Xms1G"));
 
     public static EnumLanguageLevel projectLangLevel = EnumLanguageLevel.JDK_1_8;
     public static EnumLanguageLevel projectBytecodeLevel = EnumLanguageLevel.JDK_1_8;
@@ -72,9 +74,9 @@ public class GuiFields {
     public static void exportSetup(File targetFile) {
         try {
             SetupSerializer.writeSetup(targetFile);
-            LogHelper.info("Successfully exported %s modules to: %s",  modules.size() - 1, targetFile.getAbsolutePath());
+            LogHelper.info("Successfully exported %s modules to: %s", modules.size() - 1, targetFile.getAbsolutePath());
         } catch (IOException e) {
-            LogHelper.errorError("Exception was thrown whils exporting modules to: %s", e, targetFile.getAbsolutePath());
+            LogHelper.errorError("Exception was thrown whilst exporting modules to: %s", e, targetFile.getAbsolutePath());
         }
     }
 }

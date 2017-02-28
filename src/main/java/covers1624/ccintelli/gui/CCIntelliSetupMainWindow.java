@@ -1048,7 +1048,6 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                 }
             }
 
-
             if (moduleTree.getEditingPath() != null) {
                 String editing = moduleTree.getEditingPath().getLastPathComponent().toString();
                 if (editing.equals("Modules") || editing.equals("Forge")) {
@@ -1281,6 +1280,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                 return;
             }
             GuiFields.importSetup(chooser.getSelectedFile());
+            JOptionPane.showMessageDialog(this, "Successfully imported setup!");
             reloadModuleTree();
             reloadCorePluginList();
         }
@@ -1300,6 +1300,7 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
                     return;
                 }
                 GuiFields.exportSetup(chooser.getSelectedFile());
+                JOptionPane.showMessageDialog(this, "Successfully exported setup!");
                 return;
             }
 
@@ -1307,9 +1308,10 @@ public class CCIntelliSetupMainWindow extends javax.swing.JFrame {
 
             if (chooser.getFileFilter() == filter && !chooser.getSelectedFile().getAbsolutePath().endsWith(".json")) {
                 GuiFields.exportSetup(new File(path + ".json"));
-            }
-            else {
+                JOptionPane.showMessageDialog(this, "Successfully exported setup!");
+            } else {
                 GuiFields.exportSetup(chooser.getSelectedFile());
+                JOptionPane.showMessageDialog(this, "Successfully exported setup!");
             }
             reloadModuleTree();
             reloadCorePluginList();
