@@ -11,7 +11,7 @@ apply plugin: 'idea'
 group = "covers1624.ccintelli"
 archivesBaseName = "CCIntelliSetup"
 
-version = "1.2-BETA"
+version = "1.3-BETA"
 
 def commonManifest = {
     attributes 'Main-Class': 'covers1624.ccintelli.launch.Launch'
