@@ -117,13 +117,13 @@ public class Module {
 								forgeModule.orderEntries.add(new SimpleEntry(Type.INHERITED_JDK));
 								break;
 							case "module-library":
-								boolean exported = entryElement.hasAttribute("exported");
+								//boolean exported = entryElement.hasAttribute("exported");
 								Scope scope = Scope.fromString(entryElement.getAttribute("scope"));
 								NodeList nodes = entryElement.getChildNodes();
 								for (int j = 0; j < nodes.getLength(); j++) {
 									Node node1 = nodes.item(j);
 									if (node1.getNodeType() == Node.ELEMENT_NODE) {
-										forgeModule.orderEntries.add(LibraryEntry.fromElement(((Element) node1), exported, scope));
+										forgeModule.orderEntries.add(LibraryEntry.fromElement(((Element) node1), true, scope));
 										break;
 									}
 								}
