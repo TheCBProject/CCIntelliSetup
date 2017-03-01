@@ -34,7 +34,7 @@ public class ModuleEntry extends OrderEntry {
     public static ModuleEntry fromJson(JsonObject element) {
 	    boolean export = element.get("export").getAsBoolean();
 	    Scope scope = Scope.fromString(element.get("scope").getAsString());
-	    String module = element.get("module").getAsString();
-        return null;
+	    String name = element.get("module").getAsString();
+        return new ModuleEntry(name, export, scope);
     }
 }

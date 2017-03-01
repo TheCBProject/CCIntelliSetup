@@ -50,9 +50,9 @@ public class SetupSerializer {
         JsonObject object = new JsonObject();
         JsonArray moduleArray = new JsonArray();
         for (Module module : GuiFields.modules) {
-            if (!module.NAME.equals("Forge")) {
-                moduleArray.add(module.toJson());
-            }
+            //if (!module.NAME.equals("Forge")) {
+            moduleArray.add(module.toJson());
+            //}
         }
         object.add("modules", moduleArray);
         JsonArray corePlugins = new JsonArray();

@@ -72,6 +72,10 @@ public class Module {
 				element.setAttribute("isTestSource", "false");
 			}
 			for (OrderEntry entry : orderEntries) {
+			    if (entry == null) {
+			        LogHelper.error("Found null order entry for module %s", NAME);
+			        continue;
+                }
 				componentElement.appendChild(entry.createElement(document));
 			}
 
@@ -83,7 +87,7 @@ public class Module {
 			StreamResult result = new StreamResult(file);
 			transformer.transform(source, result);
 		} catch (Exception e) {
-			throw new RuntimeException("Unable to create module XML!", e);
+			LogHelper.fatalError("Unable to create module iml!", e);
 		}
 	}
 
